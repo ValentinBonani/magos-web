@@ -66,8 +66,11 @@ Repo: https://github.com/ValentinBonani/magos-web
 ## Preguntas pendientes
 
 **Catálogo (abiertas tras la ronda 2)**
-6b. Confirmar estructura de secciones/categorías propuesta (ver respuesta en el chat
-    del 2026-10-16): secciones principales + categorías dentro de juegos de mesa.
+6b. Confirmar estructura propuesta de dos niveles:
+    - Secciones (menú principal): Juegos de mesa · Magic · Pokémon · Mazos.
+    - Categorías dentro de Juegos de mesa (ejemplo): Estrategia, Familiares, Party,
+      Cartas, Infantiles, Cooperativos. Cargables/editables desde el panel.
+    ¿Qué categorías concretas usar?
 6c. ¿"Mazos" son mazos armados de Magic/Pokémon, o mazos de cartas comunes (póker, etc.)?
 7b. Filtro de jugadores: ¿sirve "¿para cuántos jugadores?" (ingresás un número y muestra
     los juegos donde entra)? ¿Edad como "hasta X años"?
