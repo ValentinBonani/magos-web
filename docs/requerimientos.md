@@ -41,15 +41,38 @@ Repo: https://github.com/ValentinBonani/magos-web
   - Implica que el panel admin necesita una forma rápida de registrar ventas del local
     (o ajustes de stock). A confirmar con la pregunta 20.
 
+### Ficha de producto
+- **Obligatorios:** nombre, fotos (una o más), descripción, categoría, precio.
+- **Opcionales:** precio de oferta, jugadores mínimos, jugadores máximos, edad mínima,
+  editorial.
+- No hacen falta por ahora: duración, idioma, dificultad.
+
+### Tipos de producto
+- Juegos de mesa (lo principal).
+- Sobres/packs de cartas de **Magic: The Gathering** y **Pokémon**.
+- **Mazos.**
+- Probablemente cada tipo tenga su propia sección en la web.
+- **Sin variantes:** si un juego tiene otra versión (ej. otro idioma), se carga como un
+  producto aparte y la diferencia se aclara en el título o la descripción.
+
+### Listado, búsqueda y filtros
+- **Orden por defecto:** lo último que se cargó aparece primero.
+- **Filtros:** editorial, categoría, cantidad de jugadores (mínimo/máximo) y edad.
+- Búsqueda por texto: a confirmar (ver preguntas abiertas).
+
+### Funcionalidades a futuro (no para el lanzamiento)
+- Preventa y aviso de "avisame cuando haya stock" para productos agotados.
+
 ## Preguntas pendientes
 
-**Catálogo y fichas**
-5. Datos a mostrar por juego (nombre, fotos, descripción, precio, precio oferta,
-   jugadores, edad, duración, editorial, idioma, dificultad…).
-6. Organización: categorías, editoriales, otra.
-7. Filtros, búsqueda y ordenamiento.
-8. ¿Solo juegos o también accesorios/expansiones? ¿Variantes (ej. idioma)?
-9. ¿Preventa / "avisame cuando haya stock"?
+**Catálogo (abiertas tras la ronda 2)**
+6b. Confirmar estructura de secciones/categorías propuesta (ver respuesta en el chat
+    del 2026-10-16): secciones principales + categorías dentro de juegos de mesa.
+6c. ¿"Mazos" son mazos armados de Magic/Pokémon, o mazos de cartas comunes (póker, etc.)?
+7b. Filtro de jugadores: ¿sirve "¿para cuántos jugadores?" (ingresás un número y muestra
+    los juegos donde entra)? ¿Edad como "hasta X años"?
+7c. ¿Buscador por nombre en la cabecera?
+7d. ¿Los productos agotados se muestran (como "Sin stock") o se ocultan?
 
 **Compra y pagos**
 10. Medios de cobro (Mercado Pago, transferencia con descuento, efectivo al retirar).
