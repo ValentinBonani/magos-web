@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { AddToCart } from "@/components/store/cart/add-to-cart";
 import { buttonVariants } from "@/components/ui/button";
 import { SECTION_LABELS } from "@/db/schema";
 import { getProductBySlug } from "@/lib/catalog";
@@ -67,19 +68,28 @@ export default async function ProductPage({ params }: PageProps<"/producto/[slug
             </p>
           )}
 
-          {/* El carrito llega en la Etapa 3; mientras tanto, consulta por WhatsApp. */}
-          <a
-            href={whatsappUrl(
-              soldOut
-                ? `¡Hola! Quería saber si va a volver a entrar "${product.name}".`
-                : `¡Hola! Me interesa "${product.name}".`,
-            )}
-            target="_blank"
-            rel="noopener"
-            className={buttonVariants({ size: "lg", className: "w-full sm:w-auto" })}
-          >
-            {soldOut ? "Consultar por WhatsApp si vuelve" : "Consultar por WhatsApp"}
-          </a>
+          {soldOut ? (
+            <a
+              href={whatsappUrl(`¡Hola! Quería saber si va a volver a entrar "${product.name}".`)}
+              target="_blank"
+              rel="noopener"
+              className={buttonVariants({ size: "lg", className: "w-full sm:w-auto" })}
+            >
+              Consultar por WhatsApp si vuelve
+            </a>
+          ) : (
+            <>
+              <AddToCart productId={product.id} stock={product.stock} />
+              <a
+                href={whatsappUrl(`¡Hola! Tengo una consulta sobre "${product.name}".`)}
+                target="_blank"
+                rel="noopener"
+                className="inline-block text-sm text-muted-foreground hover:text-foreground hover:underline"
+              >
+                ¿Dudas? Consultanos por WhatsApp
+              </a>
+            </>
+          )}
 
           {specs.length > 0 && (
             <dl className="grid grid-cols-3 gap-3 rounded-xl border p-4 text-sm">

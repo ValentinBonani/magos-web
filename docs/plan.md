@@ -40,16 +40,22 @@ en Vercel para probar. Se marca el estado de cada etapa a medida que avanza.
 - ✅ Tarjetas uniformes (cuadrado fijo, foto entera sobre blanco) y fuente Geist.
 - Más adelante, si hay tiempo: pulir el diseño de la tienda.
 
-### Etapa 3 — Carrito, checkout y pedidos · ⬜ pendiente
-- Carrito con límite de 6 unidades.
-- Checkout como invitado, retiro en el local.
-- Pago por transferencia (reserva 2 hs, subida de comprobante, link único, "Mi pedido")
-  y efectivo (sin reserva hasta confirmar por WhatsApp, vence a las 48 hs).
-- Descuentos por medio de pago (configurables).
-- Tareas automáticas: vencimientos y recordatorio de comprobante.
-- Emails al cliente y al admin (Resend).
-- Panel de pedidos: ver comprobantes, confirmar, preparar, entregar, cancelar.
-- **El dueño crea cuenta:** Resend.
+### Etapa 3 — Carrito, checkout y pedidos · 🟡 en prueba
+- ✅ Esquema: `orders`, `order_items`, `settings` (migración `0002_pedidos`). Bucket
+  privado `receipts` para comprobantes.
+- ✅ Lógica en `src/lib/orders.ts`: el stock de `products` es el disponible; reservar lo
+  descuenta (UPDATE ... WHERE stock >= cantidad, en transacción) y cancelar lo devuelve.
+  Reglas y textos en `src/lib/order-rules.ts`.
+- ✅ Carrito en localStorage (`src/components/store/cart/`), máximo 6 unidades.
+- ✅ Checkout como invitado, retiro en el local, transferencia y efectivo con descuento.
+- ✅ Página del pedido `/pedido/[token]` (subida de comprobante) y `/mi-pedido`.
+- ✅ Emails (`src/lib/order-emails.ts`, vía API de Resend).
+- ✅ Tareas automáticas: pg_cron en Supabase llama a `/api/cron/orders` cada 5 min
+  (`scripts/setup-cron.mjs`). Vencimientos y recordatorio a la hora.
+- ✅ Panel: pedidos (lista, detalle, acciones, comprobante) y configuración de descuentos.
+- ✅ Prueba automática de la lógica (29 casos, incluida concurrencia) contra la base.
+- ⬜ Cargar `RESEND_API_KEY` y `CRON_SECRET` en `.env.local` y en Vercel.
+- ⬜ Prueba del dueño (compra de punta a punta).
 
 ### Etapa 4 — Mercado Pago · ⬜ pendiente
 - Checkout de Mercado Pago con reserva de stock mientras dura el pago.

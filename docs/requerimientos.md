@@ -132,7 +132,9 @@ el cliente paga). Medidas:
 6. **Mercado Pago:** reservar el stock solo mientras dura el pago (~15–30 min).
 
 ### Panel de administración
-- **Usuarios:** por ahora un solo admin (el dueño). Sin roles ni permisos.
+- **Usuarios:** admins valentin.bonani@gmail.com y sofia@magos.com (2026-10-17). Todos
+  con acceso completo, sin roles ni permisos distintos. Se agregan creando el usuario en
+  Supabase y corriendo `scripts/make-admin.mjs <email>`.
 - **Productos:** alta/edición/baja con fotos, stock, precio y demás campos de la ficha.
   Categorías editables.
 - **Pedidos:** ver comprobantes, confirmar pagos, confirmar pedidos en efectivo, marcar
@@ -158,7 +160,7 @@ el cliente paga). Medidas:
 ### Notificaciones al cliente (definidas hasta ahora)
 - Confirmación de pedido (con número, link único y, si es transferencia, datos
   bancarios).
-- Recordatorio de comprobante de transferencia.
+- Recordatorio de comprobante de transferencia (a la hora de hecho el pedido).
 - Efectivo: aviso de que tiene que contactarse por WhatsApp para reservar.
 - Cancelación de pedido (vencido o sin stock).
 - **"Tu pedido está listo para retirar"** para pedidos pagados con retiro en el local,
@@ -168,8 +170,11 @@ el cliente paga). Medidas:
   - Email de confirmación con el número de pedido, los datos bancarios y un **link
     único al pedido** para subir el comprobante.
   - Página "Mi pedido" para buscarlo con número de pedido + email.
-  - Email de recordatorio a las ~24 hs si todavía no subió el comprobante.
+  - Email de recordatorio **a la hora** si todavía no subió el comprobante (la reserva
+    dura 2 hs). Los pedidos en efectivo no llevan recordatorio.
   - Alternativa: botón de WhatsApp en la página del pedido.
+- **Datos bancarios (PROVISORIOS):** alias `valentin.bonani`, titular Valentin Bonani,
+  Banco Galicia. Están en `src/lib/site.ts`.
 - **Sin cuotas sin interés** en el lanzamiento.
 - **Sin cupones de descuento** en el lanzamiento.
 
@@ -227,5 +232,5 @@ el cliente paga). Medidas:
 - Lista de categorías de juegos de mesa (6d).
 - Textos/fotos para Nosotros; dirección, horarios y teléfono/WhatsApp para Contacto
   y retiro (6e).
-- Usuario de Instagram (22b).
-- Datos bancarios para transferencias (CBU/alias, titular).
+- Datos reales (hoy hay provisorios en `src/lib/site.ts`): WhatsApp, Instagram,
+  dirección, horarios y datos bancarios.

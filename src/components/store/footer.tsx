@@ -42,6 +42,9 @@ export function StoreFooter() {
               {link.label}
             </Link>
           ))}
+          <Link href="/mi-pedido" className="hover:text-white">
+            Mi pedido
+          </Link>
           <span className="ml-auto text-white/50">© {new Date().getFullYear()} {SITE.name}</span>
         </nav>
       </div>

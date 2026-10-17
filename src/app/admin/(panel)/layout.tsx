@@ -1,19 +1,29 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
+import { count, inArray } from "drizzle-orm";
 import { buttonVariants } from "@/components/ui/button";
+import { db } from "@/db";
+import { orders } from "@/db/schema";
 import { requireAdmin } from "@/lib/auth";
+import { NEEDS_ATTENTION } from "@/lib/order-rules";
 import { signOut } from "../actions";
 
 export const metadata: Metadata = { title: "Panel — Magos del Sur" };
 
 const NAV = [
+  { href: "/admin/pedidos", label: "Pedidos" },
   { href: "/admin/productos", label: "Productos" },
   { href: "/admin/categorias", label: "Categorías" },
+  { href: "/admin/configuracion", label: "Configuración" },
 ];
 
 export default async function PanelLayout({ children }: LayoutProps<"/admin">) {
   const admin = await requireAdmin();
+  const [{ pending }] = await db
+    .select({ pending: count() })
+    .from(orders)
+    .where(inArray(orders.status, NEEDS_ATTENTION));
 
   return (
     <div className="flex flex-1 flex-col">
@@ -31,7 +41,7 @@ export default async function PanelLayout({ children }: LayoutProps<"/admin">) {
               Panel
             </span>
           </Link>
-          <nav className="flex gap-1">
+          <nav className="flex flex-wrap gap-1">
             {NAV.map((item) => (
               <Link
                 key={item.href}
@@ -39,6 +49,11 @@ export default async function PanelLayout({ children }: LayoutProps<"/admin">) {
                 className={buttonVariants({ variant: "ghost" })}
               >
                 {item.label}
+                {item.href === "/admin/pedidos" && pending > 0 && (
+                  <span className="ml-1 rounded-full bg-primary px-1.5 text-xs text-primary-foreground">
+                    {pending}
+                  </span>
+                )}
               </Link>
             ))}
           </nav>

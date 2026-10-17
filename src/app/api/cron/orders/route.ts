@@ -1,0 +1,23 @@
+import { timingSafeEqual } from "node:crypto";
+import { NextResponse, type NextRequest } from "next/server";
+import { processScheduledOrderTasks } from "@/lib/orders";
+
+// Vencimientos y recordatorios de pedidos. La llama pg_cron (Supabase) cada 5 minutos
+// con el header "Authorization: Bearer <CRON_SECRET>" (ver scripts/setup-cron.mjs).
+
+function authorized(request: NextRequest) {
+  const secret = process.env.CRON_SECRET;
+  const header = request.headers.get("authorization") ?? "";
+  if (!secret) return false;
+  const expected = Buffer.from(`Bearer ${secret}`);
+  const received = Buffer.from(header);
+  return expected.length === received.length && timingSafeEqual(expected, received);
+}
+
+export async function POST(request: NextRequest) {
+  if (!authorized(request)) {
+    return NextResponse.json({ error: "No autorizado" }, { status: 401 });
+  }
+  const result = await processScheduledOrderTasks();
+  return NextResponse.json(result);
+}

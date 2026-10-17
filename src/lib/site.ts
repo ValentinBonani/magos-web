@@ -11,7 +11,23 @@ export const SITE = {
   hours: ["Martes a viernes de 10 a 19 hs", "Sábados de 10 a 18 hs"],
   // Botón flotante de WhatsApp (en la Etapa 5 pasa a configurarse desde el panel).
   showWhatsappButton: true,
+  bank: {
+    alias: "valentin.bonani",
+    holder: "Valentin Bonani",
+    bank: "Banco Galicia",
+  },
+  // A dónde llegan los avisos de pedidos nuevos y comprobantes.
+  notifyEmail: "valentin.bonani@gmail.com",
 };
+
+// URL pública del sitio, para los links de los emails.
+export function siteUrl() {
+  if (process.env.VERCEL_ENV === "production" && process.env.VERCEL_PROJECT_PRODUCTION_URL) {
+    return `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`;
+  }
+  if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`;
+  return "http://localhost:3005";
+}
 
 export function whatsappUrl(message?: string) {
   const base = `https://wa.me/${SITE.whatsapp}`;

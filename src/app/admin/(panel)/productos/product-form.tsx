@@ -110,6 +110,9 @@ export function ProductForm({ action, categories, publishers, product, imagePath
               min={0}
               defaultValue={product?.stock ?? 0}
             />
+            <p className="text-xs text-muted-foreground">
+              Disponible para vender. Lo reservado en pedidos ya está descontado.
+            </p>
             <FieldError message={errors.stock} />
           </div>
 

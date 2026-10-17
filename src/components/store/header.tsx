@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { CartButton } from "./cart/cart-button";
 import { DesktopNav, MobileNav } from "./main-nav";
 import { SearchBox } from "./search-box";
 
@@ -19,6 +20,10 @@ export function StoreHeader() {
           />
         </Link>
         <DesktopNav />
+        {/* Celular: carrito a la derecha del logo. Escritorio: después del buscador. */}
+        <div className="ml-auto flex items-center sm:order-last sm:ml-0">
+          <CartButton />
+        </div>
         <SearchBox className="order-last w-full sm:order-none sm:ml-auto sm:w-64" />
       </div>
     </header>

@@ -9,23 +9,29 @@ const supabase = createClient(
   { auth: { persistSession: false } },
 );
 
-// 1. Bucket público para las fotos de productos.
-const BUCKET = "product-images";
+// 1. Buckets: fotos de productos (público) y comprobantes de transferencia (privado).
+const BUCKETS = {
+  "product-images": { public: true, fileSizeLimit: "5MB", allowedMimeTypes: ["image/webp"] },
+  receipts: {
+    public: false,
+    fileSizeLimit: "5MB",
+    allowedMimeTypes: ["image/webp", "application/pdf"],
+  },
+};
 const { data: buckets, error: listError } = await supabase.storage.listBuckets();
 if (listError) throw listError;
-if (buckets.some((b) => b.name === BUCKET)) {
-  console.log(`Bucket "${BUCKET}" ya existe.`);
-} else {
-  const { error } = await supabase.storage.createBucket(BUCKET, {
-    public: true,
-    fileSizeLimit: "5MB",
-    allowedMimeTypes: ["image/webp"],
-  });
+for (const [name, options] of Object.entries(BUCKETS)) {
+  if (buckets.some((b) => b.name === name)) {
+    console.log(`Bucket "${name}" ya existe.`);
+    continue;
+  }
+  const { error } = await supabase.storage.createBucket(name, options);
   if (error) throw error;
-  console.log(`Bucket "${BUCKET}" creado.`);
+  console.log(`Bucket "${name}" creado.`);
 }
 
-// 2. Categorías iniciales (se pueden editar desde el panel).
+// 2. Categorías iniciales, SOLO si no hay ninguna (después se manejan desde el panel;
+//    no hay que volver a crear las que el dueño borró).
 const CATEGORIES = {
   "juegos-de-mesa": [
     "Estrategia",
@@ -49,8 +55,9 @@ const slugify = (s) =>
 
 const sql = postgres(process.env.DATABASE_URL, { prepare: false });
 try {
+  const [{ total }] = await sql`select count(*)::int as total from categories`;
   let created = 0;
-  for (const [section, names] of Object.entries(CATEGORIES)) {
+  for (const [section, names] of total > 0 ? [] : Object.entries(CATEGORIES)) {
     for (const name of names) {
       const rows = await sql`
         insert into categories (section, name, slug)
