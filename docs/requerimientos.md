@@ -100,7 +100,24 @@ Repo: https://github.com/ValentinBonani/magos-web
     confirmar; si no lo hace, el producto no queda reservado y se puede vender antes.
   - Cuando el cliente se contacta y el admin **confirma el pedido** desde el panel, el
     stock se reserva y el pedido **ya no vence**.
-  - Pendiente: qué pasa con los pedidos en efectivo nunca confirmados (ver preguntas).
+  - Si el cliente nunca confirma, el pedido se **cancela solo a las 48 hs**.
+  - Si al confirmar ya no hay stock (ej. se vendió en el mostrador), el panel avisa al
+    admin y el pedido se cancela, con email al cliente.
+  - El WhatsApp es el mismo número que el teléfono de contacto del local.
+
+### Protección contra pedidos falsos (bloqueo de stock)
+Riesgo detectado por el dueño: alguien malintencionado podría hacer pedidos falsos para
+dejar todos los productos reservados (sin stock). Los pedidos en efectivo no reservan,
+así que el riesgo está en **transferencia** (y, unos minutos, en Mercado Pago mientras
+el cliente paga). Propuesta (a confirmar):
+1. **Reserva corta por transferencia:** el stock se reserva ~2 hs al crear el pedido;
+   si en ese plazo sube el comprobante, queda reservado hasta la revisión del admin; si
+   no, se libera. (Reemplazaría las 48 hs.)
+2. **Captcha invisible** en el checkout (Cloudflare Turnstile).
+3. **Límites:** máximo 1–2 pedidos pendientes simultáneos por email / teléfono / IP, y
+   máximo de unidades por producto por pedido (ej. 3).
+4. **Panel:** cancelar pedido y liberar stock al instante; bloquear email/teléfono.
+5. Mercado Pago: reservar el stock solo mientras dura el pago (~15–30 min).
 - **Comprobante de transferencia:** el cliente lo **sube en la web**, en la página de su
   pedido. Para que pueda volver aunque cierre la web:
   - Email de confirmación con el número de pedido, los datos bancarios y un **link
@@ -131,12 +148,10 @@ Repo: https://github.com/ValentinBonani/magos-web
     mapa, teléfono/WhatsApp, ¿formulario de contacto?).
 
 **Retiro en el local / efectivo (abiertas tras la ronda 7)**
-14b. Pedidos en efectivo nunca confirmados: ¿se cancelan solos a las X hs?
-14c. Si el producto se agota antes de que el cliente confirme: el sistema avisa al
-     admin al intentar confirmar y el pedido se cancela (con email al cliente). ¿OK?
 14d. Pedidos pagados (Mercado Pago o transferencia) con retiro en el local: ¿email
      "tu pedido está listo para retirar" cuando el admin lo prepara?
-14e. ¿El número de WhatsApp es el mismo que el teléfono de contacto?
+14f. Confirmar la propuesta de protección contra pedidos falsos (plazo de reserva por
+     transferencia y límites).
 
 **Envíos**
 15b. Empresa de correo y forma de cobrar el envío (etapa próxima).
