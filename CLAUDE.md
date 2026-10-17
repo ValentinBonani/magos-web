@@ -8,6 +8,8 @@ con panel de administración de juegos, stock y precios.
   actualizado cada vez que se defina algo nuevo.
 - Forma de trabajo: primero definir todos los requerimientos, después armar un plan e
   implementar por etapas.
-- Estado actual: relevando requerimientos. Todavía no hay código.
+- Plan por etapas: `docs/plan.md`. Actualizar el estado de cada etapa al avanzar.
+- Estado actual: requerimientos definidos y plan armado. Próximo paso: Etapa 0.
+  Todavía no hay código.
 - Repo: https://github.com/ValentinBonani/magos-web (rama `main`).
 - GitHub CLI instalado en `C:\Program Files\GitHub CLI\gh.exe`.

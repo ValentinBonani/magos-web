@@ -67,7 +67,9 @@ Repo: https://github.com/ValentinBonani/magos-web
 ### Eventos
 - Sección para anunciar los eventos del local (torneos, noches de juego,
   presentaciones). Se cargan y editan desde el panel.
-- Detalle (datos del evento, inscripción, cupo, precio): a definir.
+- **Datos:** título, descripción, fecha y hora (obligatorios); imagen (opcional).
+- **Sin inscripción desde la web:** si hace falta, se maneja por mensajería.
+- **Orden:** arriba los próximos eventos; más abajo una sección de eventos pasados.
 
 ### Listado, búsqueda y filtros
 - **Orden por defecto:** lo último que se cargó aparece primero.
@@ -201,9 +203,22 @@ el cliente paga). Medidas:
 **Comunicación**
 22b. Usuario de Instagram y número de WhatsApp/teléfono (junto con logo y colores).
 
-**Eventos**
-23b. Datos de cada evento, ¿inscripción online?, ¿cupo?, ¿precio/pago?, ¿eventos
-     pasados visibles?
+## Prioridades y alcance
 
-**Prioridades**
-26. Fecha objetivo y alcance mínimo para lanzar.
+- **Sin fecha objetivo** por ahora.
+- **Primera versión (lanzamiento):**
+  - Catálogo con buscador y filtros.
+  - Carrito y checkout como invitado con los 3 medios de pago.
+  - Retiro en el local.
+  - Panel con productos, pedidos y ventas del mostrador.
+- **Después del lanzamiento:** envíos (cuando se elija la empresa), eventos, Excel,
+  alertas de stock, estadísticas, listado de clientes y lo que figura "a futuro".
+- Plan de implementación por etapas: `docs/plan.md`.
+
+## Material que tiene que pasar el dueño
+- Logo y colores de la marca.
+- Lista de categorías de juegos de mesa (6d).
+- Textos/fotos para Nosotros; dirección, horarios y teléfono/WhatsApp para Contacto
+  y retiro (6e).
+- Usuario de Instagram (22b).
+- Datos bancarios para transferencias (CBU/alias, titular).
