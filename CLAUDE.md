@@ -1,3 +1,5 @@
+@AGENTS.md
+
 # Magos del Sur — tienda online
 
 Tienda online de juegos de mesa para el local "Magos del Sur" (Quilmes, Buenos Aires),

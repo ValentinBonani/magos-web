@@ -31,7 +31,13 @@ Repo: https://github.com/ValentinBonani/magos-web
 
 ### Negocio
 - **Nombre:** Magos del Sur.
-- **Marca:** tiene logo y colores definidos. **Pendiente:** el dueño va a pasar los archivos.
+- **Marca:** tiene logo y colores definidos.
+  - **Logo recibido:** `assets/logo.jpg` (sombrero de mago + "MAGOS del sur", negro y
+    violeta). El archivo está en **CMYK** (para imprenta): para la web hay que generar
+    versiones RGB (PNG/SVG).
+  - **Colores:** negro + violeta. El violeta está definido como C55 M68 Y0 K0; según la
+    conversión da #835CA3 (fiel a imprenta) o #7352FF (vivo). Violeta claro: C33 M41
+    Y0 K4. **Pendiente:** confirmar los códigos RGB/hex oficiales.
 - **Dominio:** todavía no comprado. Probablemente `magosdelsur.com.ar` o similar.
 - **Ubicación del local:** Quilmes Centro, Provincia de Buenos Aires, Argentina.
 - **Tamaño del catálogo:** ~100 juegos distintos por ahora.
