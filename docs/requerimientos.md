@@ -89,11 +89,18 @@ Repo: https://github.com/ValentinBonani/magos-web
   - Transferencia: **10%** (valor inicial).
   - Efectivo: **15%** (valor inicial).
   - Se aplican solo sobre el total de productos, **no sobre el envío**.
-- **Reserva de stock:** los pedidos pendientes (transferencia/efectivo) **reservan** el
-  stock. Si en **48 hs** el admin no confirmó el pago, el pedido vence automáticamente y
-  el stock se libera.
+- **Reserva de stock — transferencia:** el pedido pendiente **reserva** el stock. Si en
+  **48 hs** el admin no confirmó el pago, el pedido vence automáticamente y el stock se
+  libera.
   - **Excepción:** si el cliente ya subió el comprobante, el pedido **no vence**; queda
     esperando la revisión del admin.
+- **Reserva de stock — efectivo (retiro en el local):** el pedido **NO reserva** stock
+  al crearse.
+  - El cliente recibe un email avisando que tiene que **contactarse por WhatsApp** para
+    confirmar; si no lo hace, el producto no queda reservado y se puede vender antes.
+  - Cuando el cliente se contacta y el admin **confirma el pedido** desde el panel, el
+    stock se reserva y el pedido **ya no vence**.
+  - Pendiente: qué pasa con los pedidos en efectivo nunca confirmados (ver preguntas).
 - **Comprobante de transferencia:** el cliente lo **sube en la web**, en la página de su
   pedido. Para que pueda volver aunque cierre la web:
   - Email de confirmación con el número de pedido, los datos bancarios y un **link
@@ -103,6 +110,12 @@ Repo: https://github.com/ValentinBonani/magos-web
   - Alternativa: botón de WhatsApp en la página del pedido.
 - **Sin cuotas sin interés** en el lanzamiento.
 - **Sin cupones de descuento** en el lanzamiento.
+
+### Envíos y retiro
+- **Retiro en el local:** se muestra dirección, horarios y teléfono de contacto.
+- **Envíos por correo a todo el país:** sí. **Empresa y forma de cobro a definir en una
+  etapa próxima** (fijo / por zonas / calculado / gratis desde monto).
+- **Sin envío propio** (moto/cadete): todo va por la empresa de correo que se elija.
 
 ### Funcionalidades a futuro (no para el lanzamiento)
 - Preventa y aviso de "avisame cuando haya stock" para productos agotados.
@@ -117,10 +130,16 @@ Repo: https://github.com/ValentinBonani/magos-web
 6e. Contenido de Nosotros (texto, fotos del local) y Contacto (dirección, horarios,
     mapa, teléfono/WhatsApp, ¿formulario de contacto?).
 
+**Retiro en el local / efectivo (abiertas tras la ronda 7)**
+14b. Pedidos en efectivo nunca confirmados: ¿se cancelan solos a las X hs?
+14c. Si el producto se agota antes de que el cliente confirme: el sistema avisa al
+     admin al intentar confirmar y el pedido se cancela (con email al cliente). ¿OK?
+14d. Pedidos pagados (Mercado Pago o transferencia) con retiro en el local: ¿email
+     "tu pedido está listo para retirar" cuando el admin lo prepara?
+14e. ¿El número de WhatsApp es el mismo que el teléfono de contacto?
+
 **Envíos**
-14. ¿Retiro en el local?
-15. Envíos por correo: empresa, costo fijo/calculado/gratis desde monto.
-16. ¿Envío propio en la zona?
+15b. Empresa de correo y forma de cobrar el envío (etapa próxima).
 
 **Panel de administración**
 17. Usuarios del panel y permisos.
