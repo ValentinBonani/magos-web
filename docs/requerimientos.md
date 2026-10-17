@@ -56,13 +56,18 @@ Repo: https://github.com/ValentinBonani/magos-web
   producto aparte y la diferencia se aclara en el título o la descripción.
 
 ### Estructura del sitio
-- **Menú principal:** Juegos de mesa · Magic · Pokémon · Nosotros · Contacto.
+- **Menú principal:** Juegos de mesa · Magic · Pokémon · Eventos · Nosotros · Contacto.
 - **Categorías:** cada sección de productos tiene categorías, que se crean y editan desde
   el panel. Propuesta inicial:
   - Juegos de mesa: Estrategia, Familiares, Party, Cartas, Infantiles, Cooperativos
     (a confirmar).
   - Magic y Pokémon: Sobres, Mazos (propuesta).
 - **Nosotros** y **Contacto**: páginas institucionales (contenido a definir).
+
+### Eventos
+- Sección para anunciar los eventos del local (torneos, noches de juego,
+  presentaciones). Se cargan y editan desde el panel.
+- Detalle (datos del evento, inscripción, cupo, precio): a definir.
 
 ### Listado, búsqueda y filtros
 - **Orden por defecto:** lo último que se cargó aparece primero.
@@ -172,6 +177,12 @@ el cliente paga). Medidas:
 
 ### Funcionalidades a futuro (no para el lanzamiento)
 - Lector de código de barras en el mostrador (campo "código de barras" en el producto).
+- Lista de deseos (requiere cuentas de cliente).
+- Newsletter.
+
+### Fuera de alcance (por ahora)
+- Reseñas/valoraciones de clientes.
+- Facturación electrónica (ARCA): el dueño factura a mano al final del día.
 - Preventa y aviso de "avisame cuando haya stock" para productos agotados.
 - **Cuotas sin interés** (el dueño tiene que averiguar costos/condiciones en Mercado Pago).
 - Cupones de descuento.
@@ -190,10 +201,9 @@ el cliente paga). Medidas:
 **Comunicación**
 22b. Usuario de Instagram y número de WhatsApp/teléfono (junto con logo y colores).
 
-**Extras**
-23. ¿Eventos / club / lista de deseos / newsletter?
-24. ¿Reseñas de clientes?
-25. ¿Facturación electrónica (ARCA) integrada?
+**Eventos**
+23b. Datos de cada evento, ¿inscripción online?, ¿cupo?, ¿precio/pago?, ¿eventos
+     pasados visibles?
 
 **Prioridades**
 26. Fecha objetivo y alcance mínimo para lanzar.
