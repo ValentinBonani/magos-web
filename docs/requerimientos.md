@@ -39,8 +39,7 @@ Repo: https://github.com/ValentinBonani/magos-web
 ### Stock
 - **El stock es único y compartido entre el local físico y la web.** Una venta en el
   mostrador tiene que descontar stock de la web y viceversa.
-  - Implica que el panel admin necesita una forma rápida de registrar ventas del local
-    (o ajustes de stock). A confirmar con la pregunta 20.
+  - Las ventas del local se registran desde el panel (ver Panel de administración).
 
 ### Ficha de producto
 - **Obligatorios:** nombre, fotos (una o más), descripción, categoría, precio.
@@ -118,6 +117,24 @@ el cliente paga). Medidas:
 5. **Panel:** cancelar pedido y liberar stock al instante; bloquear email/teléfono.
 6. **Mercado Pago:** reservar el stock solo mientras dura el pago (~15–30 min).
 
+### Panel de administración
+- **Usuarios:** por ahora un solo admin (el dueño). Sin roles ni permisos.
+- **Productos:** alta/edición/baja con fotos, stock, precio y demás campos de la ficha.
+  Categorías editables.
+- **Pedidos:** ver comprobantes, confirmar pagos, confirmar pedidos en efectivo, marcar
+  como preparado/enviado/entregado, cancelar (libera stock), bloquear email/teléfono.
+- **Configuración:** porcentajes de descuento por medio de pago.
+- **Importar/exportar el catálogo en Excel** para editar productos y precios en masa
+  (las fotos se cargan desde el panel, no por Excel).
+- **Registro de ventas del local (mostrador):** se carga qué se vendió, medio de pago y
+  monto; descuenta stock y queda en el historial junto con las ventas online. El local
+  todavía no abrió y **no tiene otro sistema de ventas: esta web va a ser su único
+  registro de ventas**, así que tiene que ser rápido de usar en el mostrador.
+- **Para el final del desarrollo (no prioritarias):**
+  - Alerta de stock bajo (1 unidad o menos).
+  - Estadísticas (ventas del día/mes, más vendidos).
+  - Listado de clientes.
+
 ### Notificaciones al cliente (definidas hasta ahora)
 - Confirmación de pedido (con número, link único y, si es transferencia, datos
   bancarios).
@@ -158,11 +175,12 @@ el cliente paga). Medidas:
 **Envíos**
 15b. Empresa de correo y forma de cobrar el envío (etapa próxima).
 
-**Panel de administración**
-17. Usuarios del panel y permisos.
-18. Qué más gestionar (pedidos y estados, clientes, ventas, alertas de stock bajo).
-19. ¿Actualización masiva de precios / importar desde Excel?
-20. ¿Registrar ventas del local desde el panel? (ver sección Stock)
+**Panel de administración (abiertas tras la ronda 9)**
+20b. Medios de pago en el mostrador (efectivo, transferencia, débito/crédito con
+     posnet o Mercado Pago Point…). ¿Los descuentos por medio de pago aplican también
+     en el local?
+20c. ¿Lector de código de barras en el mostrador para cargar ventas más rápido? (Los
+     juegos suelen traer código EAN en la caja.)
 
 **Notificaciones y comunicación**
 21. Emails al cliente y avisos de venta al dueño (email/WhatsApp).
