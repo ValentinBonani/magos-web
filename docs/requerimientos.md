@@ -130,6 +130,12 @@ el cliente paga). Medidas:
   monto; descuenta stock y queda en el historial junto con las ventas online. El local
   todavía no abrió y **no tiene otro sistema de ventas: esta web va a ser su único
   registro de ventas**, así que tiene que ser rápido de usar en el mostrador.
+  - Medios de pago en el mostrador: **efectivo, transferencia y tarjeta** (posnet a
+    definir, probablemente del Banco Provincia).
+  - **Mismos descuentos que online:** 15% efectivo, 10% transferencia, tarjeta sin
+    descuento.
+- **Notificación de pedidos nuevos al admin:** por **email** y visibles en el panel.
+  (Sin WhatsApp automático.)
 - **Para el final del desarrollo (no prioritarias):**
   - Alerta de stock bajo (1 unidad o menos).
   - Estadísticas (ventas del día/mes, más vendidos).
@@ -159,7 +165,13 @@ el cliente paga). Medidas:
   etapa próxima** (fijo / por zonas / calculado / gratis desde monto).
 - **Sin envío propio** (moto/cadete): todo va por la empresa de correo que se elija.
 
+### Comunicación y redes
+- **Botón flotante de WhatsApp** en toda la web. El dueño puede querer sacarlo después
+  → que se pueda activar/desactivar desde el panel.
+- **Redes:** solo Instagram (usuario a definir). Link en la cabecera o el pie.
+
 ### Funcionalidades a futuro (no para el lanzamiento)
+- Lector de código de barras en el mostrador (campo "código de barras" en el producto).
 - Preventa y aviso de "avisame cuando haya stock" para productos agotados.
 - **Cuotas sin interés** (el dueño tiene que averiguar costos/condiciones en Mercado Pago).
 - Cupones de descuento.
@@ -175,16 +187,8 @@ el cliente paga). Medidas:
 **Envíos**
 15b. Empresa de correo y forma de cobrar el envío (etapa próxima).
 
-**Panel de administración (abiertas tras la ronda 9)**
-20b. Medios de pago en el mostrador (efectivo, transferencia, débito/crédito con
-     posnet o Mercado Pago Point…). ¿Los descuentos por medio de pago aplican también
-     en el local?
-20c. ¿Lector de código de barras en el mostrador para cargar ventas más rápido? (Los
-     juegos suelen traer código EAN en la caja.)
-
-**Notificaciones y comunicación**
-21. Emails al cliente y avisos de venta al dueño (email/WhatsApp).
-22. Botón de WhatsApp, links a redes.
+**Comunicación**
+22b. Usuario de Instagram y número de WhatsApp/teléfono (junto con logo y colores).
 
 **Extras**
 23. ¿Eventos / club / lista de deseos / newsletter?
