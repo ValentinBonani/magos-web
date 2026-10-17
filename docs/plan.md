@@ -5,11 +5,13 @@ en Vercel para probar. Se marca el estado de cada etapa a medida que avanza.
 
 ## Primera versión (lanzamiento)
 
-### Etapa 0 — Base del proyecto · ⬜ pendiente
-- Crear proyecto Next.js + TypeScript + Tailwind + shadcn/ui.
-- Crear proyecto en Supabase (base de datos, auth, storage) y conectar Drizzle.
-- Publicar en Vercel con deploy automático desde GitHub.
-- **El dueño crea cuentas:** Supabase y Vercel (con su cuenta de GitHub).
+### Etapa 0 — Base del proyecto · 🟡 casi lista
+- ✅ Proyecto Next.js 16 + TypeScript + Tailwind + shadcn/ui.
+- ✅ Proyecto en Supabase (región us-east-1, igual que Vercel) y Drizzle conectado
+  (`src/db/`, `drizzle.config.ts`, scripts `db:generate` / `db:migrate` / `db:studio`).
+- ✅ Publicado en Vercel: https://magos-web.vercel.app (deploy automático desde `main`).
+- ✅ Colores de marca y logo web; página provisoria "Próximamente".
+- ⬜ Cargar las variables de entorno de `.env.local` en Vercel.
 
 ### Etapa 1 — Productos y panel básico · ⬜ pendiente
 - Modelo de datos: secciones, categorías, productos (con fotos), stock.
