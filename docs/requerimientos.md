@@ -23,6 +23,7 @@ WhatsApp y redes, newsletter).
 | ORM | Drizzle |
 | Pagos | Mercado Pago |
 | Hosting | Vercel (deploy automático desde GitHub) |
+| Emails transaccionales | Resend |
 
 Repo: https://github.com/ValentinBonani/magos-web
 
@@ -43,9 +44,10 @@ Repo: https://github.com/ValentinBonani/magos-web
 
 ### Ficha de producto
 - **Obligatorios:** nombre, fotos (una o más), descripción, categoría, precio.
-- **Opcionales:** precio de oferta, jugadores mínimos, jugadores máximos, edad mínima,
-  editorial.
+- **Opcionales:** jugadores mínimos, jugadores máximos, edad mínima, editorial.
 - No hacen falta por ahora: duración, idioma, dificultad.
+- **Sin precio de oferta:** hay un solo precio por producto; para ofertas se baja el
+  precio desde el panel.
 
 ### Tipos de producto
 - Juegos de mesa (lo principal).
@@ -86,12 +88,14 @@ Repo: https://github.com/ValentinBonani/magos-web
 - **Descuentos por medio de pago**, configurables desde el panel:
   - Transferencia: **10%** (valor inicial).
   - Efectivo: **15%** (valor inicial).
-  - Propuesta: se aplican sobre el total de productos (no sobre el envío). A confirmar.
+  - Se aplican solo sobre el total de productos, **no sobre el envío**.
 - **Reserva de stock:** los pedidos pendientes (transferencia/efectivo) **reservan** el
   stock. Si en **48 hs** el admin no confirmó el pago, el pedido vence automáticamente y
   el stock se libera.
+  - **Excepción:** si el cliente ya subió el comprobante, el pedido **no vence**; queda
+    esperando la revisión del admin.
 - **Comprobante de transferencia:** el cliente lo **sube en la web**, en la página de su
-  pedido. Para que pueda volver aunque cierre la web (propuesta, a confirmar):
+  pedido. Para que pueda volver aunque cierre la web:
   - Email de confirmación con el número de pedido, los datos bancarios y un **link
     único al pedido** para subir el comprobante.
   - Página "Mi pedido" para buscarlo con número de pedido + email.
@@ -112,14 +116,6 @@ Repo: https://github.com/ValentinBonani/magos-web
 6d. Lista definitiva de categorías (se puede ajustar después desde el panel).
 6e. Contenido de Nosotros (texto, fotos del local) y Contacto (dirección, horarios,
     mapa, teléfono/WhatsApp, ¿formulario de contacto?).
-
-**Compra y pagos (abiertas tras la ronda 5)**
-10f. Confirmar propuesta para volver al pedido (email con link único, "Mi pedido",
-     recordatorio a las 24 hs).
-10g. Si el cliente ya subió el comprobante pero el admin no lo revisó a tiempo, ¿el
-     pedido igual vence a las 48 hs? (Propuesta: no vence; queda esperando revisión.)
-10h. ¿Los descuentos por medio de pago se suman al precio de oferta, o no aplican a
-     productos en oferta?
 
 **Envíos**
 14. ¿Retiro en el local?
