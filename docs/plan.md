@@ -26,7 +26,7 @@ en Vercel para probar. Se marca el estado de cada etapa a medida que avanza.
 - Pendiente menor: fotos subidas en un formulario que no se guardó quedan huérfanas
   en el storage (limpieza automática más adelante).
 
-### Etapa 2 — Tienda pública · 🟡 en prueba
+### Etapa 2 — Tienda pública · ✅ lista (probada por el dueño)
 - ✅ Layout (`src/app/(tienda)/layout.tsx`): cabecera con menú y buscador, pie, botón
   de WhatsApp. Datos del local en `src/lib/site.ts` (**provisorios**).
 - ✅ Inicio, listados por sección (`/[seccion]`), ficha (`/producto/[slug]`), búsqueda
@@ -37,7 +37,8 @@ en Vercel para probar. Se marca el estado de cada etapa a medida que avanza.
 - ✅ Buscador con sugerencias desde 3 caracteres, sin distinguir acentos (`unaccent`).
 - ✅ Contacto con datos del local; Nosotros y Eventos con texto provisorio.
 - Mientras no haya carrito, la ficha tiene "Consultar por WhatsApp".
-- ⬜ Prueba del dueño.
+- ✅ Tarjetas uniformes (cuadrado fijo, foto entera sobre blanco) y fuente Geist.
+- Más adelante, si hay tiempo: pulir el diseño de la tienda.
 
 ### Etapa 3 — Carrito, checkout y pedidos · ⬜ pendiente
 - Carrito con límite de 6 unidades.
