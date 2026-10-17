@@ -11,9 +11,10 @@ export function ProductCard({ product }: { product: ProductCardData }) {
   return (
     <Link
       href={`/producto/${product.slug}`}
-      className="group flex flex-col overflow-hidden rounded-xl border bg-card transition-shadow hover:shadow-md"
+      className="group flex w-full flex-col overflow-hidden rounded-xl border bg-card transition-shadow hover:shadow-md"
     >
-      <div className="relative aspect-square bg-muted">
+      {/* Cuadrado fijo; la foto entra entera (sin recortar la caja) sobre fondo blanco. */}
+      <div className="relative aspect-square bg-white">
         {product.image && (
           <Image
             src={productImageUrl(product.image)}
@@ -21,7 +22,7 @@ export function ProductCard({ product }: { product: ProductCardData }) {
             fill
             sizes="(min-width: 1024px) 25vw, (min-width: 640px) 33vw, 50vw"
             className={cn(
-              "object-cover transition-transform duration-300 group-hover:scale-105",
+              "object-contain p-3 transition-transform duration-300 group-hover:scale-105",
               soldOut && "opacity-60 grayscale-[40%]",
             )}
           />
@@ -32,8 +33,9 @@ export function ProductCard({ product }: { product: ProductCardData }) {
           </span>
         )}
       </div>
-      <div className="flex flex-1 flex-col gap-1 p-3">
-        <h3 className="line-clamp-2 text-sm font-medium">{product.name}</h3>
+      <div className="flex flex-1 flex-col gap-1 border-t p-3">
+        {/* Siempre 2 renglones de alto, para que los precios queden alineados. */}
+        <h3 className="line-clamp-2 min-h-10 text-sm leading-5 font-medium">{product.name}</h3>
         <p className={cn("mt-auto font-semibold text-primary", soldOut && "text-muted-foreground")}>
           {formatPrice(product.price)}
         </p>

@@ -11,7 +11,7 @@ export function Gallery({ images, name, soldOut }: { images: string[]; name: str
 
   return (
     <div className="space-y-3">
-      <div className="relative aspect-square overflow-hidden rounded-2xl border bg-muted">
+      <div className="relative aspect-square overflow-hidden rounded-2xl border bg-white">
         {current && (
           <Image
             src={productImageUrl(current)}
