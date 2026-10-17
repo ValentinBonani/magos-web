@@ -82,6 +82,21 @@ Repo: https://github.com/ValentinBonani/magos-web
   - **Transferencia bancaria:** el pedido queda **pendiente** hasta que el cliente pase
     el comprobante y el admin lo confirme.
   - **Efectivo:** el pedido queda **pendiente** hasta que se retira y paga en el local.
+- **Efectivo solo con retiro en el local** (no contra entrega).
+- **Descuentos por medio de pago**, configurables desde el panel:
+  - Transferencia: **10%** (valor inicial).
+  - Efectivo: **15%** (valor inicial).
+  - Propuesta: se aplican sobre el total de productos (no sobre el envío). A confirmar.
+- **Reserva de stock:** los pedidos pendientes (transferencia/efectivo) **reservan** el
+  stock. Si en **48 hs** el admin no confirmó el pago, el pedido vence automáticamente y
+  el stock se libera.
+- **Comprobante de transferencia:** el cliente lo **sube en la web**, en la página de su
+  pedido. Para que pueda volver aunque cierre la web (propuesta, a confirmar):
+  - Email de confirmación con el número de pedido, los datos bancarios y un **link
+    único al pedido** para subir el comprobante.
+  - Página "Mi pedido" para buscarlo con número de pedido + email.
+  - Email de recordatorio a las ~24 hs si todavía no subió el comprobante.
+  - Alternativa: botón de WhatsApp en la página del pedido.
 - **Sin cuotas sin interés** en el lanzamiento.
 - **Sin cupones de descuento** en el lanzamiento.
 
@@ -98,13 +113,13 @@ Repo: https://github.com/ValentinBonani/magos-web
 6e. Contenido de Nosotros (texto, fotos del local) y Contacto (dirección, horarios,
     mapa, teléfono/WhatsApp, ¿formulario de contacto?).
 
-**Compra y pagos (abiertas tras la ronda 4)**
-10b. ¿Los pedidos pendientes (transferencia/efectivo) reservan el stock? ¿Vencen a las
-     X horas si no se paga/retira, liberando el stock?
-10c. ¿Cómo manda el cliente el comprobante de transferencia? (subirlo en la web,
-     WhatsApp, email)
-10d. ¿Descuento por pagar con transferencia o efectivo?
-10e. ¿Efectivo solo para retiro en el local, o también contra entrega en envíos propios?
+**Compra y pagos (abiertas tras la ronda 5)**
+10f. Confirmar propuesta para volver al pedido (email con link único, "Mi pedido",
+     recordatorio a las 24 hs).
+10g. Si el cliente ya subió el comprobante pero el admin no lo revisó a tiempo, ¿el
+     pedido igual vence a las 48 hs? (Propuesta: no vence; queda esperando revisión.)
+10h. ¿Los descuentos por medio de pago se suman al precio de oferta, o no aplican a
+     productos en oferta?
 
 **Envíos**
 14. ¿Retiro en el local?
