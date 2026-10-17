@@ -1,4 +1,4 @@
-import { and, desc, eq, ilike } from "drizzle-orm";
+import { and, desc, eq, sql } from "drizzle-orm";
 import Image from "next/image";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
@@ -52,7 +52,9 @@ export default async function ProductsPage({ searchParams }: PageProps<"/admin/p
     )
     .where(
       and(
-        q ? ilike(products.name, `%${q.replace(/[%_\\]/g, "\\$&")}%`) : undefined,
+        q
+          ? sql`extensions.unaccent(${products.name}) ilike extensions.unaccent(${`%${q.replace(/[%_\\]/g, "\\$&")}%`})`
+          : undefined,
         section ? eq(categories.section, section) : undefined,
       ),
     )

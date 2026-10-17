@@ -26,12 +26,18 @@ en Vercel para probar. Se marca el estado de cada etapa a medida que avanza.
 - Pendiente menor: fotos subidas en un formulario que no se guardó quedan huérfanas
   en el storage (limpieza automática más adelante).
 
-### Etapa 2 — Tienda pública · ⬜ pendiente
-- Layout general: cabecera con menú y buscador, pie, botón de WhatsApp.
-- Inicio, listados por sección (Juegos de mesa, Magic, Pokémon) y ficha de producto.
-- Orden por último cargado; agotados al final con banner "Agotado".
-- Filtros: categoría, editorial, "¿para cuántos jugadores?", edad.
-- Buscador con sugerencias desde 3 caracteres.
+### Etapa 2 — Tienda pública · 🟡 en prueba
+- ✅ Layout (`src/app/(tienda)/layout.tsx`): cabecera con menú y buscador, pie, botón
+  de WhatsApp. Datos del local en `src/lib/site.ts` (**provisorios**).
+- ✅ Inicio, listados por sección (`/[seccion]`), ficha (`/producto/[slug]`), búsqueda
+  (`/buscar`). Consultas en `src/lib/catalog.ts`.
+- ✅ Orden: con stock primero, después agotados (banner "Agotado"); último cargado primero.
+- ✅ Filtros: categoría en todas las secciones; jugadores, edad y editorial solo en
+  Juegos de mesa. Los productos sin el dato no aparecen al filtrar por ese dato.
+- ✅ Buscador con sugerencias desde 3 caracteres, sin distinguir acentos (`unaccent`).
+- ✅ Contacto con datos del local; Nosotros y Eventos con texto provisorio.
+- Mientras no haya carrito, la ficha tiene "Consultar por WhatsApp".
+- ⬜ Prueba del dueño.
 
 ### Etapa 3 — Carrito, checkout y pedidos · ⬜ pendiente
 - Carrito con límite de 6 unidades.
