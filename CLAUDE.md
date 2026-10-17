@@ -11,7 +11,14 @@ con panel de administración de juegos, stock y precios.
 - Forma de trabajo: primero definir todos los requerimientos, después armar un plan e
   implementar por etapas.
 - Plan por etapas: `docs/plan.md`. Actualizar el estado de cada etapa al avanzar.
-- Estado actual: ver `docs/plan.md` (Etapa 0 casi lista; sigue Etapa 1).
+- Estado actual: ver `docs/plan.md`.
+- Base de datos: esquema en `src/db/schema.ts`. Cambios: editar el esquema, luego
+  `npm run db:generate -- --name <nombre>` y `npm run db:migrate`. Toda tabla nueva
+  lleva `.enableRLS()`.
+- Panel en `/admin` (`src/app/admin`). Toda página y Server Action del panel llama a
+  `requireAdmin()` (`src/lib/auth.ts`).
+- Scripts (correr con `node --env-file=.env.local scripts/<script>.mjs`):
+  `setup.mjs` (bucket + categorías iniciales), `make-admin.mjs <email>`.
 - Web publicada: https://magos-web.vercel.app
 - Node.js en `C:\Program Files\nodejs` (la terminal puede necesitar recargar el PATH).
 - Secretos en `.env.local` (no se sube a git). No leer ni imprimir su contenido;

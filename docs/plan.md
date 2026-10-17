@@ -5,18 +5,25 @@ en Vercel para probar. Se marca el estado de cada etapa a medida que avanza.
 
 ## Primera versión (lanzamiento)
 
-### Etapa 0 — Base del proyecto · 🟡 casi lista
+### Etapa 0 — Base del proyecto · ✅ lista
 - ✅ Proyecto Next.js 16 + TypeScript + Tailwind + shadcn/ui.
 - ✅ Proyecto en Supabase (región us-east-1, igual que Vercel) y Drizzle conectado
   (`src/db/`, `drizzle.config.ts`, scripts `db:generate` / `db:migrate` / `db:studio`).
 - ✅ Publicado en Vercel: https://magos-web.vercel.app (deploy automático desde `main`).
 - ✅ Colores de marca y logo web; página provisoria "Próximamente".
-- ⬜ Cargar las variables de entorno de `.env.local` en Vercel.
+- ✅ Variables de entorno cargadas en Vercel.
 
-### Etapa 1 — Productos y panel básico · ⬜ pendiente
-- Modelo de datos: secciones, categorías, productos (con fotos), stock.
-- Login del admin.
-- Panel: alta/edición/baja de productos y categorías, subida de fotos.
+### Etapa 1 — Productos y panel básico · 🟡 en prueba
+- ✅ Modelo de datos (`src/db/schema.ts`, migración `drizzle/0000_inicial.sql`):
+  categorías por sección, productos, fotos. RLS activado en todas las tablas.
+- ✅ Bucket `product-images` y categorías iniciales (`scripts/setup.mjs`).
+- ✅ Login del admin (Supabase Auth; admin = `app_metadata.role = "admin"`, se asigna
+  con `scripts/make-admin.mjs`).
+- ✅ Panel: listado con búsqueda y filtro, alta/edición/borrado de productos,
+  categorías, subida de fotos (achicadas en el navegador y re-procesadas con sharp).
+- ⬜ Prueba del dueño con su cuenta de admin.
+- Pendiente menor: fotos subidas en un formulario que no se guardó quedan huérfanas
+  en el storage (limpieza automática más adelante).
 
 ### Etapa 2 — Tienda pública · ⬜ pendiente
 - Layout general: cabecera con menú y buscador, pie, botón de WhatsApp.
