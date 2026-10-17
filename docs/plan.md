@@ -54,8 +54,14 @@ en Vercel para probar. Se marca el estado de cada etapa a medida que avanza.
   (`scripts/setup-cron.mjs`). Vencimientos y recordatorio a la hora.
 - ✅ Panel: pedidos (lista, detalle, acciones, comprobante) y configuración de descuentos.
 - ✅ Prueba automática de la lógica (29 casos, incluida concurrencia) contra la base.
-- ⬜ Cargar `RESEND_API_KEY` y `CRON_SECRET` en `.env.local` y en Vercel.
-- ⬜ Prueba del dueño (compra de punta a punta).
+- ✅ `RESEND_API_KEY` y `CRON_SECRET` en `.env.local` (email de prueba enviado OK).
+- ⬜ **Siguiente paso (sesión del 2026-10-17 terminó acá):** cargar `RESEND_API_KEY` y
+  `CRON_SECRET` en Vercel y hacer Redeploy. Verificar con
+  `POST https://magos-web.vercel.app/api/cron/orders` + `Authorization: Bearer <CRON_SECRET>`
+  → tiene que dar 200 (hoy da 401 = faltan las claves en Vercel).
+- ⬜ Prueba del dueño con emails (compra de punta a punta, transferencia y efectivo).
+  El pedido #1001 (efectivo, entregado) fue una prueba del dueño hecha antes de cargar
+  las claves en Vercel: funcionó todo menos los emails.
 
 ### Etapa 4 — Mercado Pago · ⬜ pendiente
 - Checkout de Mercado Pago con reserva de stock mientras dura el pago.
