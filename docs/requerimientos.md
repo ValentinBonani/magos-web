@@ -89,10 +89,10 @@ Repo: https://github.com/ValentinBonani/magos-web
   - Transferencia: **10%** (valor inicial).
   - Efectivo: **15%** (valor inicial).
   - Se aplican solo sobre el total de productos, **no sobre el envío**.
-- **Reserva de stock — transferencia:** el pedido pendiente **reserva** el stock. Si en
-  **48 hs** el admin no confirmó el pago, el pedido vence automáticamente y el stock se
-  libera.
-  - **Excepción:** si el cliente ya subió el comprobante, el pedido **no vence**; queda
+- **Reserva de stock — transferencia:** el pedido pendiente **reserva** el stock por
+  **2 hs**. Si en ese plazo el cliente no subió el comprobante, el pedido vence
+  automáticamente y el stock se libera.
+  - Si el cliente subió el comprobante, el pedido **no vence**; queda reservado
     esperando la revisión del admin.
 - **Reserva de stock — efectivo (retiro en el local):** el pedido **NO reserva** stock
   al crearse.
@@ -109,15 +109,23 @@ Repo: https://github.com/ValentinBonani/magos-web
 Riesgo detectado por el dueño: alguien malintencionado podría hacer pedidos falsos para
 dejar todos los productos reservados (sin stock). Los pedidos en efectivo no reservan,
 así que el riesgo está en **transferencia** (y, unos minutos, en Mercado Pago mientras
-el cliente paga). Propuesta (a confirmar):
-1. **Reserva corta por transferencia:** el stock se reserva ~2 hs al crear el pedido;
-   si en ese plazo sube el comprobante, queda reservado hasta la revisión del admin; si
-   no, se libera. (Reemplazaría las 48 hs.)
+el cliente paga). Medidas:
+1. **Reserva corta por transferencia:** 2 hs sin comprobante (ver Compra y pagos).
 2. **Captcha invisible** en el checkout (Cloudflare Turnstile).
-3. **Límites:** máximo 1–2 pedidos pendientes simultáneos por email / teléfono / IP, y
-   máximo de unidades por producto por pedido (ej. 3).
-4. **Panel:** cancelar pedido y liberar stock al instante; bloquear email/teléfono.
-5. Mercado Pago: reservar el stock solo mientras dura el pago (~15–30 min).
+3. **1 solo pedido pendiente a la vez** por email / teléfono / IP.
+4. **Máximo 6 unidades en total por carrito** (sumando todos los productos, ej. 3 + 2
+   + 1). Al llegar a 6 no deja agregar más.
+5. **Panel:** cancelar pedido y liberar stock al instante; bloquear email/teléfono.
+6. **Mercado Pago:** reservar el stock solo mientras dura el pago (~15–30 min).
+
+### Notificaciones al cliente (definidas hasta ahora)
+- Confirmación de pedido (con número, link único y, si es transferencia, datos
+  bancarios).
+- Recordatorio de comprobante de transferencia.
+- Efectivo: aviso de que tiene que contactarse por WhatsApp para reservar.
+- Cancelación de pedido (vencido o sin stock).
+- **"Tu pedido está listo para retirar"** para pedidos pagados con retiro en el local,
+  cuando el admin lo marca como preparado.
 - **Comprobante de transferencia:** el cliente lo **sube en la web**, en la página de su
   pedido. Para que pueda volver aunque cierre la web:
   - Email de confirmación con el número de pedido, los datos bancarios y un **link
@@ -146,12 +154,6 @@ el cliente paga). Propuesta (a confirmar):
 6d. Lista definitiva de categorías (se puede ajustar después desde el panel).
 6e. Contenido de Nosotros (texto, fotos del local) y Contacto (dirección, horarios,
     mapa, teléfono/WhatsApp, ¿formulario de contacto?).
-
-**Retiro en el local / efectivo (abiertas tras la ronda 7)**
-14d. Pedidos pagados (Mercado Pago o transferencia) con retiro en el local: ¿email
-     "tu pedido está listo para retirar" cuando el admin lo prepara?
-14f. Confirmar la propuesta de protección contra pedidos falsos (plazo de reserva por
-     transferencia y límites).
 
 **Envíos**
 15b. Empresa de correo y forma de cobrar el envío (etapa próxima).
