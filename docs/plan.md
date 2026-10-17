@@ -13,7 +13,7 @@ en Vercel para probar. Se marca el estado de cada etapa a medida que avanza.
 - ✅ Colores de marca y logo web; página provisoria "Próximamente".
 - ✅ Variables de entorno cargadas en Vercel.
 
-### Etapa 1 — Productos y panel básico · 🟡 en prueba
+### Etapa 1 — Productos y panel básico · ✅ lista (probada por el dueño)
 - ✅ Modelo de datos (`src/db/schema.ts`, migración `drizzle/0000_inicial.sql`):
   categorías por sección, productos, fotos. RLS activado en todas las tablas.
 - ✅ Bucket `product-images` y categorías iniciales (`scripts/setup.mjs`).
@@ -21,7 +21,8 @@ en Vercel para probar. Se marca el estado de cada etapa a medida que avanza.
   con `scripts/make-admin.mjs`).
 - ✅ Panel: listado con búsqueda y filtro, alta/edición/borrado de productos,
   categorías, subida de fotos (achicadas en el navegador y re-procesadas con sharp).
-- ⬜ Prueba del dueño con su cuenta de admin.
+- ✅ Prueba del dueño con su cuenta de admin.
+- Más adelante, si hay tiempo: mejorar el diseño del panel.
 - Pendiente menor: fotos subidas en un formulario que no se guardó quedan huérfanas
   en el storage (limpieza automática más adelante).
 
