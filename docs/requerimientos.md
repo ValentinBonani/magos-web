@@ -49,33 +49,40 @@ Repo: https://github.com/ValentinBonani/magos-web
 
 ### Tipos de producto
 - Juegos de mesa (lo principal).
-- Sobres/packs de cartas de **Magic: The Gathering** y **Pokémon**.
-- **Mazos.**
-- Probablemente cada tipo tenga su propia sección en la web.
+- **Magic: The Gathering** y **Pokémon**: sobres/packs y mazos armados. Los mazos son
+  siempre de Magic o Pokémon (no hay sección de mazos aparte).
 - **Sin variantes:** si un juego tiene otra versión (ej. otro idioma), se carga como un
   producto aparte y la diferencia se aclara en el título o la descripción.
 
+### Estructura del sitio
+- **Menú principal:** Juegos de mesa · Magic · Pokémon · Nosotros · Contacto.
+- **Categorías:** cada sección de productos tiene categorías, que se crean y editan desde
+  el panel. Propuesta inicial:
+  - Juegos de mesa: Estrategia, Familiares, Party, Cartas, Infantiles, Cooperativos
+    (a confirmar).
+  - Magic y Pokémon: Sobres, Mazos (propuesta).
+- **Nosotros** y **Contacto**: páginas institucionales (contenido a definir).
+
 ### Listado, búsqueda y filtros
 - **Orden por defecto:** lo último que se cargó aparece primero.
-- **Filtros:** editorial, categoría, cantidad de jugadores (mínimo/máximo) y edad.
-- Búsqueda por texto: a confirmar (ver preguntas abiertas).
+- **Agotados:** se muestran igual, pero siempre **después** de todos los productos con
+  stock, con una distinción visible: un banner "Agotado" sobre la imagen.
+- **Filtros:** editorial, categoría, edad y jugadores.
+  - **Jugadores:** "¿Para cuántos jugadores?" → se ingresa un número N y se muestran los
+    juegos con mínimo ≤ N ≤ máximo.
+  - **Edad:** "para X años o más" → juegos cuya edad mínima es ≤ X.
+- **Buscador por nombre** en la cabecera, con **sugerencias en vivo** (autocompletado)
+  a partir de los 3 caracteres escritos.
 
 ### Funcionalidades a futuro (no para el lanzamiento)
 - Preventa y aviso de "avisame cuando haya stock" para productos agotados.
 
 ## Preguntas pendientes
 
-**Catálogo (abiertas tras la ronda 2)**
-6b. Confirmar estructura propuesta de dos niveles:
-    - Secciones (menú principal): Juegos de mesa · Magic · Pokémon · Mazos.
-    - Categorías dentro de Juegos de mesa (ejemplo): Estrategia, Familiares, Party,
-      Cartas, Infantiles, Cooperativos. Cargables/editables desde el panel.
-    ¿Qué categorías concretas usar?
-6c. ¿"Mazos" son mazos armados de Magic/Pokémon, o mazos de cartas comunes (póker, etc.)?
-7b. Filtro de jugadores: ¿sirve "¿para cuántos jugadores?" (ingresás un número y muestra
-    los juegos donde entra)? ¿Edad como "hasta X años"?
-7c. ¿Buscador por nombre en la cabecera?
-7d. ¿Los productos agotados se muestran (como "Sin stock") o se ocultan?
+**Catálogo y páginas**
+6d. Lista definitiva de categorías (se puede ajustar después desde el panel).
+6e. Contenido de Nosotros (texto, fotos del local) y Contacto (dirección, horarios,
+    mapa, teléfono/WhatsApp, ¿formulario de contacto?).
 
 **Compra y pagos**
 10. Medios de cobro (Mercado Pago, transferencia con descuento, efectivo al retirar).
