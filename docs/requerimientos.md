@@ -74,8 +74,22 @@ Repo: https://github.com/ValentinBonani/magos-web
 - **Buscador por nombre** en la cabecera, con **sugerencias en vivo** (autocompletado)
   a partir de los 3 caracteres escritos.
 
+### Compra y pagos
+- **Compra como invitado** (sin cuenta): el cliente deja nombre, email, teléfono y
+  dirección (la dirección solo si hay envío).
+- **Medios de pago (3):**
+  - **Mercado Pago:** pago al instante; el pedido queda pagado automáticamente.
+  - **Transferencia bancaria:** el pedido queda **pendiente** hasta que el cliente pase
+    el comprobante y el admin lo confirme.
+  - **Efectivo:** el pedido queda **pendiente** hasta que se retira y paga en el local.
+- **Sin cuotas sin interés** en el lanzamiento.
+- **Sin cupones de descuento** en el lanzamiento.
+
 ### Funcionalidades a futuro (no para el lanzamiento)
 - Preventa y aviso de "avisame cuando haya stock" para productos agotados.
+- **Cuotas sin interés** (el dueño tiene que averiguar costos/condiciones en Mercado Pago).
+- Cupones de descuento.
+- Cuentas de cliente (historial de pedidos, etc.).
 
 ## Preguntas pendientes
 
@@ -84,11 +98,13 @@ Repo: https://github.com/ValentinBonani/magos-web
 6e. Contenido de Nosotros (texto, fotos del local) y Contacto (dirección, horarios,
     mapa, teléfono/WhatsApp, ¿formulario de contacto?).
 
-**Compra y pagos**
-10. Medios de cobro (Mercado Pago, transferencia con descuento, efectivo al retirar).
-11. ¿Cuotas sin interés?
-12. ¿Compra como invitado o cuenta obligatoria?
-13. ¿Cupones de descuento?
+**Compra y pagos (abiertas tras la ronda 4)**
+10b. ¿Los pedidos pendientes (transferencia/efectivo) reservan el stock? ¿Vencen a las
+     X horas si no se paga/retira, liberando el stock?
+10c. ¿Cómo manda el cliente el comprobante de transferencia? (subirlo en la web,
+     WhatsApp, email)
+10d. ¿Descuento por pagar con transferencia o efectivo?
+10e. ¿Efectivo solo para retiro en el local, o también contra entrega en envíos propios?
 
 **Envíos**
 14. ¿Retiro en el local?
