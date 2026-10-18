@@ -63,10 +63,22 @@ en Vercel para probar. Se marca el estado de cada etapa a medida que avanza.
   El pedido #1001 (efectivo, entregado) fue una prueba del dueño hecha antes de cargar
   las claves en Vercel: funcionó todo menos los emails.
 
-### Etapa 4 — Mercado Pago · ⬜ pendiente
-- Checkout de Mercado Pago con reserva de stock mientras dura el pago.
-- Confirmación automática del pedido al acreditarse el pago.
-- **El dueño necesita:** cuenta de Mercado Pago del negocio (credenciales).
+### Etapa 4 — Mercado Pago · 🟡 código listo, sin publicar
+- ✅ Checkout Pro por API REST (`src/lib/mercadopago.ts`): preferencia con vencimiento
+  igual a la reserva (30 min), solo medios instantáneos (sin ticket/atm), cuotas = 1.
+- ✅ Estado `pendiente_mp` + columnas `mp_*` (migración `0003_mercadopago`, **sin
+  aplicar todavía**).
+- ✅ Webhook `/api/mercadopago/webhook` con verificación de firma (igual que el SDK
+  oficial; comparada en 7 casos). La vuelta del cliente (`/pedido/[token]?payment_id=`)
+  también verifica el pago contra la API.
+- ✅ `processMercadoPagoPayment` (idempotente): aprobado → pagado; en revisión → no
+  vence; pago tardío → re-reserva o devolución automática (si falla, email al admin).
+- ✅ Vencimiento a los 30 min en la tarea automática.
+- ⬜ Aplicar migración y publicar (después de la prueba de la Etapa 3 del dueño).
+- ⬜ Credenciales de prueba (`MP_ACCESS_TOKEN`, `MP_WEBHOOK_SECRET`) en `.env.local` y
+  Vercel; configurar el webhook en la aplicación de Mercado Pago.
+- ⬜ Definir cuotas (hoy: solo 1 pago).
+- ⬜ Prueba con cuentas de prueba de Mercado Pago.
 
 ### Etapa 5 — Mostrador y protección · ⬜ pendiente
 - Registro de ventas del local (rápido de usar), descontando stock.

@@ -140,6 +140,37 @@ export async function sendPaymentConfirmedEmail(order: Order) {
   });
 }
 
+// Mercado Pago: pago acreditado al instante. Reemplaza al email de "recibimos tu pedido".
+export async function sendMpPaidEmail(order: Order, items: Items) {
+  return sendEmail({
+    to: order.customerEmail,
+    subject: `¡Gracias por tu compra! Pedido #${order.number}`,
+    html: layout(
+      "¡Pago confirmado!",
+      p(`¡Hola ${escapeHtml(order.customerName)}! Recibimos el pago de tu pedido <b>#${order.number}</b> por Mercado Pago.`) +
+        p("Te avisamos por email cuando esté listo para retirar.") +
+        itemsTable(order, items) +
+        pickupInfo() +
+        button(orderLink(order), "Ver mi pedido"),
+    ),
+  });
+}
+
+// Mercado Pago: el pago llegó con la reserva ya vencida y sin stock; se devolvió.
+export async function sendMpRefundedEmail(order: Order) {
+  return sendEmail({
+    to: order.customerEmail,
+    subject: `Te devolvimos el pago del pedido #${order.number}`,
+    html: layout(
+      "Te devolvimos el pago",
+      p(
+        `Tu pago del pedido <b>#${order.number}</b> llegó después de que venciera la reserva, y mientras tanto los productos se vendieron. Ya pedimos la devolución de ${formatPrice(order.total)} a Mercado Pago; según el medio de pago puede tardar unos días en verse.`,
+      ) +
+        p(`Disculpá las molestias. Escribinos por <a href="${whatsappUrl()}" style="color:${VIOLET}">WhatsApp</a> y vemos alternativas.`),
+    ),
+  });
+}
+
 export async function sendCashConfirmedEmail(order: Order) {
   return sendEmail({
     to: order.customerEmail,
@@ -181,6 +212,19 @@ export async function sendAdminNewOrderEmail(order: Order, items: Items) {
       ) +
         itemsTable(order, items) +
         button(`${siteUrl()}/admin/pedidos/${order.id}`, "Ver en el panel"),
+    ),
+  });
+}
+
+export async function sendAdminRefundFailedEmail(order: Order, paymentId: string) {
+  return sendEmail({
+    to: SITE.notifyEmail,
+    subject: `URGENTE: devolver pago del pedido #${order.number}`,
+    html: layout(
+      `Devolución pendiente — pedido #${order.number}`,
+      p(
+        `${escapeHtml(order.customerName)} pagó ${formatPrice(order.total)} por Mercado Pago después de que venciera la reserva, y ya no hay stock. La devolución automática falló: hacela a mano desde Mercado Pago (pago <b>${escapeHtml(paymentId)}</b>).`,
+      ) + button(`${siteUrl()}/admin/pedidos/${order.id}`, "Ver en el panel"),
     ),
   });
 }

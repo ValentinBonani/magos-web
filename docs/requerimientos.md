@@ -176,6 +176,11 @@ el cliente paga). Medidas:
 - **Datos bancarios (PROVISORIOS):** alias `valentin.bonani`, titular Valentin Bonani,
   Banco Galicia. Están en `src/lib/site.ts`.
 - **Sin cuotas sin interés** en el lanzamiento.
+- **Mercado Pago (Etapa 4):** Checkout Pro, sin descuento. Reserva de stock de 30 min
+  mientras el cliente paga (el link de pago vence a la vez). Solo medios que acreditan al
+  instante (tarjetas y dinero en cuenta; sin Rapipago/Pago Fácil). Si el pago llega
+  tarde y ya no hay stock, se devuelve automáticamente.
+  - **Pendiente:** ¿se ofrecen cuotas con interés a cargo del comprador? (Hoy: 1 pago.)
 - **Sin cupones de descuento** en el lanzamiento.
 
 ### Envíos y retiro

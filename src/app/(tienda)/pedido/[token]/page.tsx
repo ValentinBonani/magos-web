@@ -6,7 +6,7 @@ import { db } from "@/db";
 import { orders, type Order } from "@/db/schema";
 import { formatPrice } from "@/lib/format";
 import { formatDateTime, PAYMENT_LABELS, STATUS_LABELS } from "@/lib/order-rules";
-import { getOrderItems } from "@/lib/orders";
+import { getOrderItems, processMercadoPagoPayment } from "@/lib/orders";
 import { SITE, whatsappUrl } from "@/lib/site";
 import { cn } from "@/lib/utils";
 import { ReceiptUpload } from "./receipt-upload";
@@ -86,6 +86,38 @@ function NextStep({ order }: { order: Order }) {
           </details>
         </Box>
       );
+    case "pendiente_mp":
+      if (expired) {
+        return (
+          <Box tone="warning">
+            <p>El tiempo para pagar venció y la reserva se liberó.</p>
+          </Box>
+        );
+      }
+      if (order.mpPaymentStatus === "in_process" || order.mpPaymentStatus === "pending") {
+        return (
+          <Box tone="warning">
+            <p>
+              <b>Tu pago está en revisión en Mercado Pago.</b> Te avisamos por email apenas se acredite.
+              Tus productos quedan reservados.
+            </p>
+          </Box>
+        );
+      }
+      return (
+        <Box tone="warning">
+          <p>
+            <b>Todavía no recibimos el pago.</b>{" "}
+            {order.mpPaymentStatus === "rejected" && "El último intento fue rechazado. "}
+            Te guardamos los productos hasta las <b>{formatDateTime(order.expiresAt!)}</b>.
+          </p>
+          {order.mpInitPoint && (
+            <a href={order.mpInitPoint} className={buttonVariants()}>
+              Pagar con Mercado Pago
+            </a>
+          )}
+        </Box>
+      );
     case "pendiente_confirmacion":
       return (
         <Box tone="warning">
@@ -149,12 +181,29 @@ function NextStep({ order }: { order: Order }) {
   }
 }
 
-export default async function OrderPage({ params }: PageProps<"/pedido/[token]">) {
+async function findOrder(token: string) {
+  const [order] = await db.select().from(orders).where(eq(orders.token, token)).limit(1);
+  return order ?? null;
+}
+
+export default async function OrderPage({ params, searchParams }: PageProps<"/pedido/[token]">) {
   const { token } = await params;
   if (!/^[A-Za-z0-9_-]{20,64}$/.test(token)) notFound();
 
-  const [order] = await db.select().from(orders).where(eq(orders.token, token)).limit(1);
+  let order = await findOrder(token);
   if (!order) notFound();
+
+  // Vuelta desde Mercado Pago (?payment_id=...): verificar el pago con la API sin
+  // esperar al webhook, que puede tardar unos segundos.
+  const paymentId = (await searchParams).payment_id;
+  if (order.status === "pendiente_mp" && typeof paymentId === "string" && /^\d+$/.test(paymentId)) {
+    try {
+      await processMercadoPagoPayment(paymentId);
+      order = (await findOrder(token)) ?? order;
+    } catch (error) {
+      console.error(`[mp] No se pudo verificar el pago ${paymentId}:`, error);
+    }
+  }
   const items = await getOrderItems(order.id);
 
   return (

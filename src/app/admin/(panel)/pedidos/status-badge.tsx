@@ -6,6 +6,7 @@ const TONES: Record<OrderStatus, string> = {
   pendiente_pago: "bg-amber-100 text-amber-900",
   comprobante_recibido: "bg-blue-100 text-blue-900",
   pendiente_confirmacion: "bg-amber-100 text-amber-900",
+  pendiente_mp: "bg-amber-100 text-amber-900",
   confirmado: "bg-blue-100 text-blue-900",
   pagado: "bg-blue-100 text-blue-900",
   listo_para_retirar: "bg-violet-100 text-violet-900",

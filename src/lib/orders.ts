@@ -7,9 +7,14 @@ import {
   products,
   type Order,
   type OrderStatus,
+  type PaymentMethod,
 } from "@/db/schema";
+import { createPreference, getPayment, refundPayment } from "@/lib/mercadopago";
 import {
+  sendAdminRefundFailedEmail,
   sendCashConfirmedEmail,
+  sendMpPaidEmail,
+  sendMpRefundedEmail,
   sendOrderCancelledEmail,
   sendOrderCreatedEmail,
   sendAdminNewOrderEmail,
@@ -21,6 +26,7 @@ import {
   CASH_CONFIRMATION_MS,
   computeTotals,
   MAX_CART_UNITS,
+  MP_RESERVATION_MS,
   TRANSFER_REMINDER_AFTER_MS,
   TRANSFER_RESERVATION_MS,
 } from "@/lib/order-rules";
@@ -77,7 +83,7 @@ export async function getOrderItems(orderId: string) {
 
 export async function createOrder(input: {
   lines: CartLine[];
-  paymentMethod: "transferencia" | "efectivo";
+  paymentMethod: PaymentMethod;
   customerName: string;
   customerEmail: string;
   customerPhone: string;
@@ -118,32 +124,54 @@ export async function createOrder(input: {
   const settings = await getSettings();
   const totals = computeTotals(subtotal, discountFor(input.paymentMethod, settings));
 
-  const isTransfer = input.paymentMethod === "transferencia";
-  const now = Date.now();
+  // Transferencia y Mercado Pago reservan al instante; efectivo recién cuando el
+  // admin confirma.
+  const flows: Record<PaymentMethod, { status: OrderStatus; reserve: boolean; ttl: number }> = {
+    transferencia: { status: "pendiente_pago", reserve: true, ttl: TRANSFER_RESERVATION_MS },
+    mercadopago: { status: "pendiente_mp", reserve: true, ttl: MP_RESERVATION_MS },
+    efectivo: { status: "pendiente_confirmacion", reserve: false, ttl: CASH_CONFIRMATION_MS },
+  };
+  const flow = flows[input.paymentMethod];
 
   const order = await db.transaction(async (tx) => {
-    // Transferencia reserva al instante; efectivo recién cuando el admin confirma.
-    if (isTransfer) await reserveStock(tx, items);
+    if (flow.reserve) await reserveStock(tx, items);
 
     const [created] = await tx
       .insert(orders)
       .values({
         token: randomBytes(24).toString("base64url"),
-        status: isTransfer ? "pendiente_pago" : "pendiente_confirmacion",
+        status: flow.status,
         paymentMethod: input.paymentMethod,
         deliveryMethod: "retiro",
         customerName: input.customerName,
         customerEmail: input.customerEmail,
         customerPhone: input.customerPhone,
         ...totals,
-        stockReserved: isTransfer,
-        expiresAt: new Date(now + (isTransfer ? TRANSFER_RESERVATION_MS : CASH_CONFIRMATION_MS)),
+        stockReserved: flow.reserve,
+        expiresAt: new Date(Date.now() + flow.ttl),
         customerIp: input.customerIp,
       })
       .returning();
     await tx.insert(orderItems).values(items.map((i) => ({ ...i, orderId: created.id })));
     return created;
   });
+
+  if (input.paymentMethod === "mercadopago") {
+    // Los emails salen cuando se acredita el pago (processMercadoPagoPayment).
+    try {
+      const preference = await createPreference(order, items);
+      const [withLink] = await db
+        .update(orders)
+        .set({ mpInitPoint: preference.init_point })
+        .where(eq(orders.id, order.id))
+        .returning();
+      return withLink;
+    } catch (error) {
+      console.error(`[mp] No se pudo crear la preferencia del pedido #${order.number}:`, error);
+      await cancelOrder(order.id, "No se pudo iniciar el pago con Mercado Pago.", ["pendiente_mp"], { notify: false });
+      throw new OrderError("No pudimos conectar con Mercado Pago. Probá de nuevo o elegí otro medio de pago.");
+    }
+  }
 
   await Promise.all([sendOrderCreatedEmail(order, items), sendAdminNewOrderEmail(order, items)]);
   return order;
@@ -167,6 +195,7 @@ export const CANCELLABLE: OrderStatus[] = [
   "pendiente_pago",
   "comprobante_recibido",
   "pendiente_confirmacion",
+  "pendiente_mp",
   "confirmado",
   "pagado",
   "listo_para_retirar",
@@ -174,14 +203,19 @@ export const CANCELLABLE: OrderStatus[] = [
 
 // Cancela el pedido (si está en uno de los estados `from`) y devuelve el stock si lo
 // tenía reservado. Devuelve null si no correspondía cancelarlo.
-export async function cancelOrder(id: string, reason: string, from: OrderStatus[] = CANCELLABLE) {
+export async function cancelOrder(
+  id: string,
+  reason: string,
+  from: OrderStatus[] = CANCELLABLE,
+  { notify = true }: { notify?: boolean } = {},
+) {
   const cancelled = await db.transaction(async (tx) => {
     const current = await lockOrder(tx, id);
     if (!current || !from.includes(current.status)) return null;
     if (current.stockReserved) await releaseStock(tx, id);
     return update(tx, id, { status: "cancelado", cancelReason: reason, expiresAt: null, stockReserved: false });
   });
-  if (cancelled) await sendOrderCancelledEmail(cancelled);
+  if (cancelled && notify) await sendOrderCancelledEmail(cancelled);
   return cancelled;
 }
 
@@ -292,7 +326,16 @@ export async function processScheduledOrderTasks() {
     ]);
   }
 
-  // 3. Recordatorio de comprobante a la hora (se marca antes de enviar: nunca dos veces).
+  // 3. Mercado Pago sin pagar a los 30 minutos (el link de pago ya venció).
+  const expiredMp = await db
+    .select({ id: orders.id })
+    .from(orders)
+    .where(and(eq(orders.status, "pendiente_mp"), lt(orders.expiresAt, now)));
+  for (const { id } of expiredMp) {
+    await cancelOrder(id, "No se completó el pago en Mercado Pago dentro de los 30 minutos.", ["pendiente_mp"]);
+  }
+
+  // 4. Recordatorio de comprobante a la hora (se marca antes de enviar: nunca dos veces).
   const toRemind = await db
     .update(orders)
     .set({ reminderSentAt: now })
@@ -310,6 +353,88 @@ export async function processScheduledOrderTasks() {
   return {
     expiredTransfers: expiredTransfers.length,
     expiredCash: expiredCash.length,
+    expiredMp: expiredMp.length,
     reminders: toRemind.length,
   };
+}
+
+// ---------- Mercado Pago ----------
+
+// Procesa un pago informado por Mercado Pago (webhook o vuelta del cliente). Siempre
+// consulta el pago a la API: nunca confía en lo que viene en la notificación o la URL.
+// Es idempotente: procesar el mismo pago dos veces no cambia nada.
+export async function processMercadoPagoPayment(paymentId: string) {
+  const payment = await getPayment(paymentId);
+  const orderId = payment.external_reference;
+  if (!orderId || !/^[0-9a-f-]{36}$/.test(orderId)) return { handled: false as const, reason: "sin pedido" };
+
+  type Outcome = "paid" | "late_paid" | "refund" | "waiting" | "noop";
+
+  const result = await db.transaction(async (tx) => {
+    const current = await lockOrder(tx, orderId);
+    if (!current || current.paymentMethod !== "mercadopago") return null;
+
+    const info = { mpPaymentId: String(payment.id), mpPaymentStatus: payment.status };
+    const amountOk = payment.currency_id === "ARS" && Math.round(payment.transaction_amount) === current.total;
+
+    if (payment.status === "approved") {
+      if (!amountOk) {
+        console.error(`[mp] Monto distinto en pedido #${current.number}: pagó ${payment.transaction_amount}, total ${current.total}`);
+        return { order: await update(tx, orderId, info), outcome: "noop" as Outcome };
+      }
+      if (current.status === "pendiente_mp") {
+        const order = await update(tx, orderId, { ...info, status: "pagado", expiresAt: null });
+        return { order, outcome: "paid" as Outcome };
+      }
+      // Pagó después de que venciera la reserva: si todavía hay stock, se reserva de
+      // nuevo; si no, se devuelve el pago.
+      if (current.status === "cancelado" && current.mpPaymentId !== String(payment.id)) {
+        try {
+          await tx.transaction(async (inner) => {
+            await reserveStock(inner, await inner.select().from(orderItems).where(eq(orderItems.orderId, orderId)));
+          });
+          const order = await update(tx, orderId, {
+            ...info,
+            status: "pagado",
+            stockReserved: true,
+            cancelReason: null,
+            expiresAt: null,
+          });
+          return { order, outcome: "late_paid" as Outcome };
+        } catch (error) {
+          if (!(error instanceof OrderError)) throw error;
+          return { order: await update(tx, orderId, info), outcome: "refund" as Outcome };
+        }
+      }
+      return { order: current, outcome: "noop" as Outcome };
+    }
+
+    if ((payment.status === "in_process" || payment.status === "pending") && current.status === "pendiente_mp") {
+      // Pago en revisión: no vencer la reserva mientras Mercado Pago decide.
+      return { order: await update(tx, orderId, { ...info, expiresAt: null }), outcome: "waiting" as Outcome };
+    }
+
+    // Rechazado / cancelado: se registra; el cliente puede reintentar hasta que venza.
+    return { order: await update(tx, orderId, info), outcome: "noop" as Outcome };
+  });
+
+  if (!result) return { handled: false as const, reason: "pedido no encontrado" };
+  const { order, outcome } = result;
+
+  if (outcome === "paid" || outcome === "late_paid") {
+    const items = await getOrderItems(order.id);
+    await Promise.all([sendMpPaidEmail(order, items), sendAdminNewOrderEmail(order, items)]);
+  }
+  if (outcome === "refund") {
+    try {
+      await refundPayment(String(payment.id));
+      await sendMpRefundedEmail(order);
+    } catch (error) {
+      // El pedido ya quedó registrado con este pago: no se reintenta solo. Avisar al
+      // admin para que haga la devolución a mano desde Mercado Pago.
+      console.error(`[mp] Falló la devolución del pago ${payment.id} (pedido #${order.number}):`, error);
+      await sendAdminRefundFailedEmail(order, String(payment.id));
+    }
+  }
+  return { handled: true as const, outcome, status: order.status };
 }

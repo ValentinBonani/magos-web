@@ -11,6 +11,8 @@ export const TRANSFER_RESERVATION_MS = 2 * 60 * 60 * 1000;
 export const TRANSFER_REMINDER_AFTER_MS = 60 * 60 * 1000;
 // Efectivo: si el cliente no escribe por WhatsApp, se cancela a las 48 hs.
 export const CASH_CONFIRMATION_MS = 48 * 60 * 60 * 1000;
+// Mercado Pago: stock reservado (y link de pago válido) mientras el cliente paga.
+export const MP_RESERVATION_MS = 30 * 60 * 1000;
 
 export const PAYMENT_LABELS: Record<PaymentMethod, string> = {
   transferencia: "Transferencia bancaria",
@@ -22,6 +24,7 @@ export const STATUS_LABELS: Record<OrderStatus, string> = {
   pendiente_pago: "Esperando comprobante",
   comprobante_recibido: "Comprobante recibido",
   pendiente_confirmacion: "Esperando confirmación por WhatsApp",
+  pendiente_mp: "Esperando pago en Mercado Pago",
   confirmado: "Confirmado (paga al retirar)",
   pagado: "Pagado",
   listo_para_retirar: "Listo para retirar",

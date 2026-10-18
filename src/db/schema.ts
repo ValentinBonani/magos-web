@@ -109,6 +109,7 @@ export const ORDER_STATUSES = [
   "pendiente_pago", // transferencia: esperando comprobante (reserva 2 hs)
   "comprobante_recibido", // transferencia: comprobante subido, falta que el admin lo revise
   "pendiente_confirmacion", // efectivo: esperando que el cliente escriba por WhatsApp (sin reserva)
+  "pendiente_mp", // Mercado Pago: el cliente está pagando (reserva 30 min)
   "confirmado", // efectivo: confirmado por el admin, stock reservado, paga al retirar
   "pagado",
   "listo_para_retirar",
@@ -148,6 +149,10 @@ export const orders = pgTable(
     receiptUploadedAt: timestamp("receipt_uploaded_at", { withTimezone: true }),
     cancelReason: text("cancel_reason"),
     customerIp: text("customer_ip"),
+    // Mercado Pago: link de pago (Checkout Pro) y último pago informado.
+    mpInitPoint: text("mp_init_point"),
+    mpPaymentId: text("mp_payment_id"),
+    mpPaymentStatus: text("mp_payment_status"),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
     updatedAt: timestamp("updated_at", { withTimezone: true })
       .notNull()

@@ -145,6 +145,14 @@ export default async function OrderDetailPage({ params }: PageProps<"/admin/pedi
                 <dd>{formatDateTime(order.expiresAt)}</dd>
               </div>
             )}
+            {order.mpPaymentId && (
+              <div>
+                <dt className="text-muted-foreground">Pago en Mercado Pago</dt>
+                <dd>
+                  N° {order.mpPaymentId} · {order.mpPaymentStatus}
+                </dd>
+              </div>
+            )}
             {order.cancelReason && (
               <div>
                 <dt className="text-muted-foreground">Motivo de cancelación</dt>

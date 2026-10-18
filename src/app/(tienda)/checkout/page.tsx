@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { mercadoPagoEnabled } from "@/lib/mercadopago";
 import { getSettings } from "@/lib/settings";
 import { SITE } from "@/lib/site";
 import { CheckoutForm } from "./checkout-form";
@@ -14,6 +15,7 @@ export default async function CheckoutPage() {
       <CheckoutForm
         transferDiscount={settings.transferDiscountPercent}
         cashDiscount={settings.cashDiscountPercent}
+        mercadoPagoEnabled={mercadoPagoEnabled()}
         pickup={{ address: `${SITE.address}, ${SITE.city}`, hours: SITE.hours }}
       />
     </div>

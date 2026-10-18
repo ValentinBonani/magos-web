@@ -22,6 +22,13 @@
       "when": 1792206117472,
       "tag": "0002_pedidos",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1792360739389,
+      "tag": "0003_mercadopago",
+      "breakpoints": true
     }
   ]
 }

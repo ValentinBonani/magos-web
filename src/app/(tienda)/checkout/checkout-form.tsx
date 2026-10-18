@@ -16,16 +16,17 @@ import { placeOrder, type CheckoutState } from "./actions";
 type Props = {
   transferDiscount: number;
   cashDiscount: number;
+  mercadoPagoEnabled: boolean;
   pickup: { address: string; hours: string[] };
 };
 
-type Method = "transferencia" | "efectivo";
+type Method = "transferencia" | "efectivo" | "mercadopago";
 
 function FieldError({ message }: { message?: string }) {
   return message ? <p className="text-sm text-destructive">{message}</p> : null;
 }
 
-export function CheckoutForm({ transferDiscount, cashDiscount, pickup }: Props) {
+export function CheckoutForm({ transferDiscount, cashDiscount, mercadoPagoEnabled, pickup }: Props) {
   const router = useRouter();
   const { lines, ready, clear } = useCart();
   const { loading, rows, subtotal, stockProblem } = useCartProducts(lines, ready);
@@ -33,15 +34,21 @@ export function CheckoutForm({ transferDiscount, cashDiscount, pickup }: Props) 
   const [state, formAction, pending] = useActionState<CheckoutState, FormData>(placeOrder, {});
   const errors = state.fieldErrors ?? {};
 
-  // Pedido creado: vaciar el carrito e ir a la página del pedido.
+  // Pedido creado: vaciar el carrito e ir a pagar a Mercado Pago o a la página del pedido.
   useEffect(() => {
-    if (state.token) {
-      clear();
-      router.replace(`/pedido/${state.token}`);
-    }
-  }, [state.token, clear, router]);
+    if (!state.token) return;
+    clear();
+    if (state.paymentUrl) window.location.assign(state.paymentUrl);
+    else router.replace(`/pedido/${state.token}`);
+  }, [state.token, state.paymentUrl, clear, router]);
 
-  if (state.token) return <p className="text-muted-foreground">Listo, te llevamos a tu pedido…</p>;
+  if (state.token) {
+    return (
+      <p className="text-muted-foreground">
+        {state.paymentUrl ? "Te llevamos a Mercado Pago para pagar…" : "Listo, te llevamos a tu pedido…"}
+      </p>
+    );
+  }
   if (loading) return <p className="text-muted-foreground">Cargando…</p>;
   if (rows.length === 0) {
     return (
@@ -64,6 +71,7 @@ export function CheckoutForm({ transferDiscount, cashDiscount, pickup }: Props) 
     );
   }
 
+  // Mercado Pago no tiene descuento.
   const percent = method === "transferencia" ? transferDiscount : method === "efectivo" ? cashDiscount : 0;
   const totals = computeTotals(subtotal, percent);
 
@@ -76,6 +84,17 @@ export function CheckoutForm({ transferDiscount, cashDiscount, pickup }: Props) 
   }
 
   const methods: { value: Method; title: string; percent: number; description: string }[] = [
+    ...(mercadoPagoEnabled
+      ? [
+          {
+            value: "mercadopago" as const,
+            title: "Mercado Pago",
+            percent: 0,
+            description:
+              "Tarjeta de crédito, débito o dinero en cuenta. Pagás ahora y el pedido queda confirmado al instante.",
+          },
+        ]
+      : []),
     {
       value: "transferencia",
       title: "Transferencia bancaria",
@@ -157,7 +176,6 @@ export function CheckoutForm({ transferDiscount, cashDiscount, pickup }: Props) 
               </span>
             </label>
           ))}
-          <p className="text-sm text-muted-foreground">Mercado Pago llega pronto.</p>
           <FieldError message={errors.paymentMethod} />
         </fieldset>
       </div>
@@ -192,7 +210,7 @@ export function CheckoutForm({ transferDiscount, cashDiscount, pickup }: Props) 
         </div>
         {state.error && <p className="text-sm text-destructive">{state.error}</p>}
         <Button type="submit" size="lg" className="w-full" disabled={pending}>
-          {pending ? "Enviando pedido…" : "Confirmar pedido"}
+          {pending ? "Enviando pedido…" : method === "mercadopago" ? "Ir a pagar" : "Confirmar pedido"}
         </Button>
         <Link href="/carrito" className="block text-center text-sm text-muted-foreground hover:underline">
           Volver al carrito

@@ -21,7 +21,7 @@ const FILTERS: { key: string; label: string; statuses: OrderStatus[] | null }[] 
   {
     key: "activos",
     label: "Activos",
-    statuses: ["pendiente_pago", "comprobante_recibido", "pendiente_confirmacion", "confirmado", "pagado", "listo_para_retirar"],
+    statuses: ["pendiente_pago", "comprobante_recibido", "pendiente_confirmacion", "pendiente_mp", "confirmado", "pagado", "listo_para_retirar"],
   },
   { key: "entregados", label: "Entregados", statuses: ["entregado"] },
   { key: "cancelados", label: "Cancelados", statuses: ["cancelado"] },
