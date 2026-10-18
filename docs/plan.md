@@ -40,7 +40,7 @@ en Vercel para probar. Se marca el estado de cada etapa a medida que avanza.
 - ✅ Tarjetas uniformes (cuadrado fijo, foto entera sobre blanco) y fuente Geist.
 - Más adelante, si hay tiempo: pulir el diseño de la tienda.
 
-### Etapa 3 — Carrito, checkout y pedidos · 🟡 en prueba
+### Etapa 3 — Carrito, checkout y pedidos · ✅ lista (probada por el dueño con emails)
 - ✅ Esquema: `orders`, `order_items`, `settings` (migración `0002_pedidos`). Bucket
   privado `receipts` para comprobantes.
 - ✅ Lógica en `src/lib/orders.ts`: el stock de `products` es el disponible; reservar lo
@@ -55,17 +55,13 @@ en Vercel para probar. Se marca el estado de cada etapa a medida que avanza.
 - ✅ Panel: pedidos (lista, detalle, acciones, comprobante) y configuración de descuentos.
 - ✅ Prueba automática de la lógica (29 casos, incluida concurrencia) contra la base.
 - ✅ `RESEND_API_KEY` y `CRON_SECRET` en `.env.local` (email de prueba enviado OK).
-- ⬜ **Siguiente paso (sesión del 2026-10-17 terminó acá):** cargar `RESEND_API_KEY` y
-  `CRON_SECRET` en Vercel y hacer Redeploy. Verificar con
-  `POST https://magos-web.vercel.app/api/cron/orders` + `Authorization: Bearer <CRON_SECRET>`
-  → tiene que dar 200 (hoy da 401 = faltan las claves en Vercel).
-- ⬜ Prueba del dueño con emails (compra de punta a punta, transferencia y efectivo).
-  El pedido #1001 (efectivo, entregado) fue una prueba del dueño hecha antes de cargar
-  las claves en Vercel: funcionó todo menos los emails.
+- ✅ `RESEND_API_KEY` y `CRON_SECRET` en Vercel (cron responde 200).
+- ✅ Prueba del dueño con emails (2026-10-18): funciona todo.
 
 ### Etapa 4 — Mercado Pago · 🟡 código listo, sin publicar
 - ✅ Checkout Pro por API REST (`src/lib/mercadopago.ts`): preferencia con vencimiento
-  igual a la reserva (30 min), solo medios instantáneos (sin ticket/atm), cuotas = 1.
+  igual a la reserva (30 min), solo medios instantáneos (sin ticket/atm), hasta 12
+  cuotas con interés a cargo del comprador.
 - ✅ Estado `pendiente_mp` + columnas `mp_*` (migración `0003_mercadopago`, **sin
   aplicar todavía**).
 - ✅ Webhook `/api/mercadopago/webhook` con verificación de firma (igual que el SDK
@@ -77,7 +73,6 @@ en Vercel para probar. Se marca el estado de cada etapa a medida que avanza.
 - ⬜ Aplicar migración y publicar (después de la prueba de la Etapa 3 del dueño).
 - ⬜ Credenciales de prueba (`MP_ACCESS_TOKEN`, `MP_WEBHOOK_SECRET`) en `.env.local` y
   Vercel; configurar el webhook en la aplicación de Mercado Pago.
-- ⬜ Definir cuotas (hoy: solo 1 pago).
 - ⬜ Prueba con cuentas de prueba de Mercado Pago.
 
 ### Etapa 5 — Mostrador y protección · ⬜ pendiente

@@ -29,9 +29,10 @@ async function mpFetch<T>(path: string, init: RequestInit & { idempotencyKey?: s
   return res.json() as Promise<T>;
 }
 
-// Cuotas que ofrece el checkout. 1 = solo en un pago (sin cuotas).
-// Ver docs/requerimientos.md (cuotas: a definir por el dueño).
-const MAX_INSTALLMENTS = 1;
+// Máximo de cuotas que ofrece el checkout. El interés lo paga el comprador (es lo que
+// viene por defecto en la cuenta de Mercado Pago; las cuotas sin interés se activan
+// aparte y las paga el vendedor). Ver docs/requerimientos.md.
+const MAX_INSTALLMENTS = 12;
 
 // Crea la preferencia de pago (el link al que se manda al cliente).
 export async function createPreference(order: Order, items: Pick<OrderItem, "name" | "unitPrice" | "quantity">[]) {
