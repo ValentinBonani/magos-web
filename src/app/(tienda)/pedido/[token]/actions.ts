@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import sharp from "sharp";
 import { sendAdminReceiptEmail } from "@/lib/order-emails";
-import { attachReceipt, OrderError } from "@/lib/orders";
+import { attachReceipt, cancelByCustomer, OrderError } from "@/lib/orders";
 import { createAdminClient } from "@/lib/supabase/admin";
 
 const MAX_BYTES = 4 * 1024 * 1024;
@@ -58,4 +58,15 @@ export async function uploadReceipt(token: string, _prev: ReceiptState, formData
 
   revalidatePath(`/pedido/${token}`);
   return { ok: true };
+}
+
+export type CancelState = { error?: string };
+
+export async function cancelMyOrder(token: string): Promise<CancelState> {
+  if (!/^[A-Za-z0-9_-]{20,64}$/.test(token)) return { error: "No encontramos el pedido." };
+  const cancelled = await cancelByCustomer(token);
+  if (!cancelled) return { error: "Este pedido ya no se puede cancelar desde acá. Escribinos por WhatsApp." };
+  // Puede haber liberado stock.
+  revalidatePath("/", "layout");
+  return {};
 }

@@ -1,13 +1,17 @@
 "use server";
 
+import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
+import { db } from "@/db";
+import { orders } from "@/db/schema";
 import { requireAdmin } from "@/lib/auth";
-import { cancelOrder, confirmCashOrder, markDelivered, markPaid, markReady } from "@/lib/orders";
+import { cancelOrder, confirmCashOrder, markDelivered, markPaid, markReady, voidCounterSale } from "@/lib/orders";
+import { blockContacts } from "../configuracion/actions";
 
 export type OrderActionState = { error?: string; ok?: string };
 
-const ACTIONS = ["confirmCash", "markPaid", "markReady", "markDelivered", "cancel"] as const;
+const ACTIONS = ["confirmCash", "markPaid", "markReady", "markDelivered", "cancel", "void", "block"] as const;
 
 // Una sola Server Action para todos los botones del detalle del pedido.
 export async function orderAction(
@@ -43,6 +47,26 @@ export async function orderAction(
       result = (await cancelOrder(id, reason || "Cancelamos tu pedido. Escribinos si tenés dudas."))
         ? { ok: "Pedido cancelado. Se devolvió el stock y se le avisó al cliente." }
         : { error: "El pedido ya no se puede cancelar." };
+      break;
+    }
+    case "void": {
+      const reason = String(formData.get("reason") ?? "").trim().slice(0, 300);
+      result = (await voidCounterSale(id, reason || "Venta anulada."))
+        ? { ok: "Venta anulada. Se devolvió el stock." }
+        : { error: "Esta venta ya no se puede anular." };
+      break;
+    }
+    case "block": {
+      const [order] = await db.select().from(orders).where(eq(orders.id, id)).limit(1);
+      if (!order || order.channel !== "web") return { error: "Pedido no encontrado." };
+      result = await blockContacts(
+        [
+          { kind: "email", value: order.customerEmail },
+          { kind: "phone", value: order.customerPhone },
+        ],
+        `Pedido #${order.number}`,
+      );
+      if (result.ok) result.ok = "Email y teléfono bloqueados. Podés desbloquearlos desde Configuración.";
       break;
     }
   }

@@ -5,6 +5,7 @@ import { headers } from "next/headers";
 import { z } from "zod";
 import { mercadoPagoEnabled } from "@/lib/mercadopago";
 import { createOrder, OrderError } from "@/lib/orders";
+import { verifyTurnstile } from "@/lib/turnstile";
 
 export type CheckoutState = {
   error?: string;
@@ -57,6 +58,10 @@ export async function placeOrder(_prev: CheckoutState, formData: FormData): Prom
   }
 
   const ip = (await headers()).get("x-forwarded-for")?.split(",")[0]?.trim() ?? null;
+
+  if (!(await verifyTurnstile(String(formData.get("turnstileToken") ?? "") || null, ip))) {
+    return { error: "No pudimos verificar que no seas un robot. Probá de nuevo." };
+  }
 
   try {
     const order = await createOrder({

@@ -1,4 +1,4 @@
-import { and, desc, inArray, sql } from "drizzle-orm";
+import { and, desc, eq, inArray, sql } from "drizzle-orm";
 import Link from "next/link";
 import { buttonVariants } from "@/components/ui/button";
 import {
@@ -10,20 +10,21 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { db } from "@/db";
-import { orders, type OrderStatus } from "@/db/schema";
+import { orders, type Channel, type OrderStatus } from "@/db/schema";
 import { requireAdmin } from "@/lib/auth";
 import { formatPrice } from "@/lib/format";
-import { formatDateTime, NEEDS_ATTENTION, PAYMENT_LABELS } from "@/lib/order-rules";
+import { COUNTER_PAYMENT_LABELS, formatDateTime, NEEDS_ATTENTION, PAYMENT_LABELS } from "@/lib/order-rules";
 import { StatusBadge } from "./status-badge";
 
-const FILTERS: { key: string; label: string; statuses: OrderStatus[] | null }[] = [
+const FILTERS: { key: string; label: string; statuses: OrderStatus[] | null; channel?: Channel }[] = [
   { key: "atender", label: "Para atender", statuses: NEEDS_ATTENTION },
   {
     key: "activos",
     label: "Activos",
     statuses: ["pendiente_pago", "comprobante_recibido", "pendiente_confirmacion", "pendiente_mp", "confirmado", "pagado", "listo_para_retirar"],
   },
-  { key: "entregados", label: "Entregados", statuses: ["entregado"] },
+  { key: "entregados", label: "Entregados (web)", statuses: ["entregado"], channel: "web" },
+  { key: "mostrador", label: "Mostrador", statuses: null, channel: "mostrador" },
   { key: "cancelados", label: "Cancelados", statuses: ["cancelado"] },
   { key: "todos", label: "Todos", statuses: null },
 ];
@@ -41,6 +42,7 @@ export default async function OrdersPage({ searchParams }: PageProps<"/admin/ped
     .where(
       and(
         filter.statuses ? inArray(orders.status, filter.statuses) : undefined,
+        filter.channel ? eq(orders.channel, filter.channel) : undefined,
         q
           ? Number.isInteger(qNumber) && qNumber > 0
             ? sql`${orders.number} = ${qNumber}`
@@ -110,10 +112,12 @@ export default async function OrdersPage({ searchParams }: PageProps<"/admin/ped
                       {o.customerName}
                     </Link>
                   </TableCell>
-                  <TableCell className="text-muted-foreground">{PAYMENT_LABELS[o.paymentMethod]}</TableCell>
+                  <TableCell className="text-muted-foreground">
+                    {o.channel === "mostrador" ? `Mostrador · ${COUNTER_PAYMENT_LABELS[o.paymentMethod]}` : PAYMENT_LABELS[o.paymentMethod]}
+                  </TableCell>
                   <TableCell className="text-right">{formatPrice(o.total)}</TableCell>
                   <TableCell>
-                    <StatusBadge status={o.status} />
+                    <StatusBadge status={o.status} channel={o.channel} />
                   </TableCell>
                 </TableRow>
               ))}

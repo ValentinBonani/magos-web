@@ -29,6 +29,13 @@
       "when": 1792360739389,
       "tag": "0003_mercadopago",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1792623362365,
+      "tag": "0004_mostrador",
+      "breakpoints": true
     }
   ]
 }

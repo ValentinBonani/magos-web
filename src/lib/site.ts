@@ -9,8 +9,6 @@ export const SITE = {
   address: "Alvear 850",
   city: "Quilmes Centro, Buenos Aires",
   hours: ["Martes a viernes de 10 a 19 hs", "Sábados de 10 a 18 hs"],
-  // Botón flotante de WhatsApp (en la Etapa 5 pasa a configurarse desde el panel).
-  showWhatsappButton: true,
   bank: {
     alias: "valentin.bonani",
     holder: "Valentin Bonani",

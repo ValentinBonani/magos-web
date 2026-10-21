@@ -82,11 +82,24 @@ en Vercel para probar. Se marca el estado de cada etapa a medida que avanza.
   de la hermana del dueño (titular de los cobros), cambiar `MP_ACCESS_TOKEN` y
   `MP_WEBHOOK_SECRET` por los de esa cuenta (producción) y reconfigurar el webhook.
 
-### Etapa 5 — Mostrador y protección · ⬜ pendiente
-- Registro de ventas del local (rápido de usar), descontando stock.
-- Captcha invisible (Cloudflare Turnstile), 1 pedido pendiente por email/teléfono/IP,
-  bloqueo de emails/teléfonos.
-- Configuración: descuentos, activar/desactivar WhatsApp.
+### Etapa 5 — Mostrador y protección · 🟡 en prueba
+- ✅ Migración `0004_mostrador` (aplicada): `orders.channel` (web/mostrador), medio de
+  pago `tarjeta`, tabla `blocked_contacts`, `settings.whatsapp_button`.
+- ✅ Mostrador (`/admin/mostrador`): buscador (Enter agrega), cantidades, medio de pago
+  con los mismos descuentos, cliente opcional. Descuenta stock y queda como venta
+  "Vendido" en Pedidos → Mostrador. Ventas de hoy con totales por medio de pago.
+  Anular venta devuelve el stock. Se pueden vender productos ocultos en la web.
+- ✅ Protección (`checkCustomerLimits` en `src/lib/orders.ts`): bloqueados, 1 pedido sin
+  pagar por email/teléfono (teléfono = últimos 8 dígitos), 3 por IP. Un Mercado Pago
+  sin terminar de la misma persona se cancela solo al hacer otro pedido.
+- ✅ El cliente puede cancelar su pedido sin pagar desde `/pedido/<token>`.
+- ✅ Bloquear email y teléfono desde el detalle del pedido; lista y desbloqueo en
+  Configuración. Botón de WhatsApp activable desde Configuración.
+- ✅ Captcha Cloudflare Turnstile (`src/lib/turnstile.ts`): **inactivo hasta cargar**
+  `NEXT_PUBLIC_TURNSTILE_SITE_KEY` y `TURNSTILE_SECRET_KEY` en Vercel.
+- ✅ Prueba automática (20 casos) contra la base.
+- ⬜ Claves de Turnstile (cuenta de Cloudflare del dueño).
+- ⬜ Prueba del dueño.
 
 ### Etapa 6 — Marca y lanzamiento · ⬜ pendiente
 - Aplicar logo y colores; páginas Nosotros y Contacto.

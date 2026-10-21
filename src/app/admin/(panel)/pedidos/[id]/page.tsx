@@ -6,7 +6,8 @@ import { db } from "@/db";
 import { orders } from "@/db/schema";
 import { requireAdmin } from "@/lib/auth";
 import { formatPrice } from "@/lib/format";
-import { formatDateTime, PAYMENT_LABELS } from "@/lib/order-rules";
+import { isBlocked } from "@/lib/contacts";
+import { COUNTER_PAYMENT_LABELS, formatDateTime, PAYMENT_LABELS } from "@/lib/order-rules";
 import { CANCELLABLE, getOrderItems } from "@/lib/orders";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { StatusBadge } from "../status-badge";
@@ -27,7 +28,12 @@ export default async function OrderDetailPage({ params }: PageProps<"/admin/pedi
 
   const [order] = await db.select().from(orders).where(eq(orders.id, id)).limit(1);
   if (!order) notFound();
-  const items = await getOrderItems(order.id);
+  const isCounterSale = order.channel === "mostrador";
+  const [items, blocked] = await Promise.all([
+    getOrderItems(order.id),
+    isCounterSale ? false : isBlocked(order.customerEmail, order.customerPhone),
+  ]);
+  const paymentLabels = isCounterSale ? COUNTER_PAYMENT_LABELS : PAYMENT_LABELS;
 
   // Link temporal (10 min) al comprobante, que está en un bucket privado.
   let receiptUrl: string | null = null;
@@ -45,8 +51,15 @@ export default async function OrderDetailPage({ params }: PageProps<"/admin/pedi
         <Link href="/admin/pedidos" className="text-sm text-muted-foreground hover:underline">
           ← Pedidos
         </Link>
-        <h1 className="text-2xl font-semibold">Pedido #{order.number}</h1>
-        <StatusBadge status={order.status} />
+        <h1 className="text-2xl font-semibold">
+          {isCounterSale ? "Venta en mostrador" : "Pedido"} #{order.number}
+        </h1>
+        <StatusBadge status={order.status} channel={order.channel} />
+        {blocked && (
+          <span className="rounded-full bg-destructive/10 px-2 py-0.5 text-xs font-medium text-destructive">
+            Cliente bloqueado
+          </span>
+        )}
       </div>
 
       <div className="grid gap-6 md:grid-cols-[1fr_18rem]">
@@ -54,17 +67,21 @@ export default async function OrderDetailPage({ params }: PageProps<"/admin/pedi
           <section className="space-y-2 rounded-xl border p-4 text-sm">
             <h2 className="font-semibold">Cliente</h2>
             <p className="text-base">{order.customerName}</p>
-            <p>
-              <a href={`mailto:${order.customerEmail}`} className="text-primary hover:underline">
-                {order.customerEmail}
-              </a>
-            </p>
-            <p>
-              {order.customerPhone} ·{" "}
-              <a href={whatsappForPhone(order.customerPhone)} target="_blank" rel="noopener" className="text-primary hover:underline">
-                Abrir WhatsApp
-              </a>
-            </p>
+            {order.customerEmail && (
+              <p>
+                <a href={`mailto:${order.customerEmail}`} className="text-primary hover:underline">
+                  {order.customerEmail}
+                </a>
+              </p>
+            )}
+            {order.customerPhone && (
+              <p>
+                {order.customerPhone} ·{" "}
+                <a href={whatsappForPhone(order.customerPhone)} target="_blank" rel="noopener" className="text-primary hover:underline">
+                  Abrir WhatsApp
+                </a>
+              </p>
+            )}
           </section>
 
           <section className="space-y-3 rounded-xl border p-4 text-sm">
@@ -129,11 +146,11 @@ export default async function OrderDetailPage({ params }: PageProps<"/admin/pedi
             </div>
             <div>
               <dt className="text-muted-foreground">Pago</dt>
-              <dd>{PAYMENT_LABELS[order.paymentMethod]}</dd>
+              <dd>{paymentLabels[order.paymentMethod]}</dd>
             </div>
             <div>
-              <dt className="text-muted-foreground">Entrega</dt>
-              <dd>Retiro en el local</dd>
+              <dt className="text-muted-foreground">{isCounterSale ? "Canal" : "Entrega"}</dt>
+              <dd>{isCounterSale ? "Mostrador del local" : "Retiro en el local"}</dd>
             </div>
             <div>
               <dt className="text-muted-foreground">Stock</dt>
@@ -155,16 +172,18 @@ export default async function OrderDetailPage({ params }: PageProps<"/admin/pedi
             )}
             {order.cancelReason && (
               <div>
-                <dt className="text-muted-foreground">Motivo de cancelación</dt>
+                <dt className="text-muted-foreground">{isCounterSale ? "Motivo de la anulación" : "Motivo de cancelación"}</dt>
                 <dd>{order.cancelReason}</dd>
               </div>
             )}
           </dl>
           <OrderActions
             id={order.id}
+            channel={order.channel}
             status={order.status}
             paymentMethod={order.paymentMethod}
             cancellable={CANCELLABLE.includes(order.status)}
+            blocked={blocked}
           />
         </aside>
       </div>

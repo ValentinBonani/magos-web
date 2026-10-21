@@ -14,10 +14,26 @@ export const CASH_CONFIRMATION_MS = 48 * 60 * 60 * 1000;
 // Mercado Pago: stock reservado (y link de pago válido) mientras el cliente paga.
 export const MP_RESERVATION_MS = 30 * 60 * 1000;
 
+// Pedidos sin pagar que puede tener abiertos una misma persona (por email o teléfono)
+// y una misma conexión (IP). La IP admite más porque en los celulares muchas personas
+// comparten la misma.
+export const PENDING_STATUSES: OrderStatus[] = ["pendiente_pago", "pendiente_confirmacion", "pendiente_mp"];
+export const MAX_PENDING_PER_CONTACT = 1;
+export const MAX_PENDING_PER_IP = 3;
+
 export const PAYMENT_LABELS: Record<PaymentMethod, string> = {
   transferencia: "Transferencia bancaria",
   efectivo: "Efectivo (al retirar)",
   mercadopago: "Mercado Pago",
+  tarjeta: "Tarjeta (posnet)",
+};
+
+// En el mostrador "efectivo" no es "al retirar".
+export const COUNTER_PAYMENT_LABELS: Record<PaymentMethod, string> = {
+  ...PAYMENT_LABELS,
+  efectivo: "Efectivo",
+  transferencia: "Transferencia",
+  tarjeta: "Tarjeta",
 };
 
 export const STATUS_LABELS: Record<OrderStatus, string> = {

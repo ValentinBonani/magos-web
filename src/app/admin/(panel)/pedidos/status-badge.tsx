@@ -1,4 +1,4 @@
-import type { OrderStatus } from "@/db/schema";
+import type { Channel, OrderStatus } from "@/db/schema";
 import { STATUS_LABELS } from "@/lib/order-rules";
 import { cn } from "@/lib/utils";
 
@@ -14,10 +14,14 @@ const TONES: Record<OrderStatus, string> = {
   cancelado: "bg-muted text-muted-foreground",
 };
 
-export function StatusBadge({ status }: { status: OrderStatus }) {
+// Las ventas del mostrador solo pueden estar vendidas o anuladas.
+const COUNTER_LABELS: Partial<Record<OrderStatus, string>> = { entregado: "Vendido", cancelado: "Anulada" };
+
+export function StatusBadge({ status, channel = "web" }: { status: OrderStatus; channel?: Channel }) {
+  const label = (channel === "mostrador" && COUNTER_LABELS[status]) || STATUS_LABELS[status];
   return (
     <span className={cn("inline-flex rounded-full px-2 py-0.5 text-xs font-medium whitespace-nowrap", TONES[status])}>
-      {STATUS_LABELS[status]}
+      {label}
     </span>
   );
 }

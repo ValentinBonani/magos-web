@@ -129,6 +129,12 @@ el cliente paga). Medidas:
 1. **Reserva corta por transferencia:** 2 hs sin comprobante (ver Compra y pagos).
 2. **Captcha invisible** en el checkout (Cloudflare Turnstile).
 3. **1 solo pedido pendiente a la vez** por email / teléfono / IP.
+   - Implementado (Etapa 5): 1 por email o teléfono (el teléfono se compara por los
+     últimos 8 dígitos) y **3 por IP** (en los celulares muchas personas comparten IP).
+     Cuenta los pedidos sin pagar (transferencia sin comprobante, efectivo sin confirmar,
+     Mercado Pago en curso). Si la misma persona deja un Mercado Pago sin terminar y hace
+     otro pedido, el anterior se cancela solo. El cliente puede cancelar su pedido sin
+     pagar desde el link del pedido.
 4. **Máximo 6 unidades en total por carrito** (sumando todos los productos, ej. 3 + 2
    + 1). Al llegar a 6 no deja agregar más.
 5. **Panel:** cancelar pedido y liberar stock al instante; bloquear email/teléfono.
@@ -153,6 +159,9 @@ el cliente paga). Medidas:
     definir, probablemente del Banco Provincia).
   - **Mismos descuentos que online:** 15% efectivo, 10% transferencia, tarjeta sin
     descuento.
+  - Implementado (Etapa 5): cliente opcional; la venta queda "Vendido" y se puede
+    anular (devuelve el stock). Resumen de ventas del día por medio de pago (sirve
+    para facturar a mano al final del día).
 - **Notificación de pedidos nuevos al admin:** por **email** y visibles en el panel.
   (Sin WhatsApp automático.)
 - **Para el final del desarrollo (no prioritarias):**

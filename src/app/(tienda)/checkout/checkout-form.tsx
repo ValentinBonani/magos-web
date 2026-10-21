@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { startTransition, useActionState, useEffect, useState } from "react";
 import { useCart } from "@/components/store/cart/cart-context";
 import { useCartProducts } from "@/components/store/cart/use-cart-products";
+import { Turnstile } from "@/components/store/turnstile";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -17,6 +18,7 @@ type Props = {
   transferDiscount: number;
   cashDiscount: number;
   mercadoPagoEnabled: boolean;
+  turnstileSiteKey: string | null;
   pickup: { address: string; hours: string[] };
 };
 
@@ -26,12 +28,14 @@ function FieldError({ message }: { message?: string }) {
   return message ? <p className="text-sm text-destructive">{message}</p> : null;
 }
 
-export function CheckoutForm({ transferDiscount, cashDiscount, mercadoPagoEnabled, pickup }: Props) {
+export function CheckoutForm({ transferDiscount, cashDiscount, mercadoPagoEnabled, turnstileSiteKey, pickup }: Props) {
   const router = useRouter();
   const { lines, ready, clear } = useCart();
   const { loading, rows, subtotal, stockProblem } = useCartProducts(lines, ready);
   const [method, setMethod] = useState<Method | null>(null);
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
   const [state, formAction, pending] = useActionState<CheckoutState, FormData>(placeOrder, {});
+  const waitingCaptcha = turnstileSiteKey !== null && captchaToken === null;
   const errors = state.fieldErrors ?? {};
 
   // Pedido creado: vaciar el carrito e ir a pagar a Mercado Pago o a la página del pedido.
@@ -80,6 +84,7 @@ export function CheckoutForm({ transferDiscount, cashDiscount, mercadoPagoEnable
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
     formData.set("lines", JSON.stringify(rows.map((r) => ({ productId: r.productId, quantity: r.quantity }))));
+    if (captchaToken) formData.set("turnstileToken", captchaToken);
     startTransition(() => formAction(formData));
   }
 
@@ -209,8 +214,16 @@ export function CheckoutForm({ transferDiscount, cashDiscount, mercadoPagoEnable
           <span>{formatPrice(totals.total)}</span>
         </div>
         {state.error && <p className="text-sm text-destructive">{state.error}</p>}
-        <Button type="submit" size="lg" className="w-full" disabled={pending}>
-          {pending ? "Enviando pedido…" : method === "mercadopago" ? "Ir a pagar" : "Confirmar pedido"}
+        {/* Cada respuesta del servidor usa el token: se pide uno nuevo. */}
+        {turnstileSiteKey && <Turnstile siteKey={turnstileSiteKey} onToken={setCaptchaToken} resetKey={state} />}
+        <Button type="submit" size="lg" className="w-full" disabled={pending || waitingCaptcha}>
+          {pending
+            ? "Enviando pedido…"
+            : waitingCaptcha
+              ? "Verificando…"
+              : method === "mercadopago"
+                ? "Ir a pagar"
+                : "Confirmar pedido"}
         </Button>
         <Link href="/carrito" className="block text-center text-sm text-muted-foreground hover:underline">
           Volver al carrito

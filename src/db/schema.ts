@@ -97,9 +97,18 @@ export const productImages = pgTable(
 
 // ---------- Pedidos ----------
 
-export const PAYMENT_METHODS = ["transferencia", "efectivo", "mercadopago"] as const;
+// "tarjeta" es solo para ventas del mostrador (posnet).
+export const PAYMENT_METHODS = ["transferencia", "efectivo", "mercadopago", "tarjeta"] as const;
 export type PaymentMethod = (typeof PAYMENT_METHODS)[number];
 export const paymentMethodEnum = pgEnum("payment_method", PAYMENT_METHODS);
+
+export const COUNTER_PAYMENT_METHODS = ["efectivo", "transferencia", "tarjeta"] as const satisfies readonly PaymentMethod[];
+export type CounterPaymentMethod = (typeof COUNTER_PAYMENT_METHODS)[number];
+
+// Pedidos de la web o ventas registradas en el mostrador del local.
+export const CHANNELS = ["web", "mostrador"] as const;
+export type Channel = (typeof CHANNELS)[number];
+export const channelEnum = pgEnum("channel", CHANNELS);
 
 // Por ahora solo retiro en el local; "envio" llega cuando se elija la empresa de correo.
 export const DELIVERY_METHODS = ["retiro"] as const;
@@ -127,9 +136,12 @@ export const orders = pgTable(
     number: integer("number").notNull().unique().generatedAlwaysAsIdentity({ startWith: 1001 }),
     // Token secreto del link único al pedido (/pedido/<token>).
     token: text("token").notNull().unique(),
+    channel: channelEnum("channel").notNull().default("web"),
     status: orderStatusEnum("status").notNull(),
     paymentMethod: paymentMethodEnum("payment_method").notNull(),
     deliveryMethod: deliveryMethodEnum("delivery_method").notNull(),
+    // En las ventas del mostrador el nombre es opcional ("Mostrador") y el email y el
+    // teléfono quedan vacíos.
     customerName: text("customer_name").notNull(),
     customerEmail: text("customer_email").notNull(),
     customerPhone: text("customer_phone").notNull(),
@@ -193,6 +205,8 @@ export const settings = pgTable(
     id: integer("id").primaryKey().default(1),
     transferDiscountPercent: integer("transfer_discount_percent").notNull().default(10),
     cashDiscountPercent: integer("cash_discount_percent").notNull().default(15),
+    // Botón flotante de WhatsApp en la tienda.
+    whatsappButton: boolean("whatsapp_button").notNull().default(true),
   },
   (t) => [
     check("settings_single_row", sql`${t.id} = 1`),
@@ -203,8 +217,30 @@ export const settings = pgTable(
   ],
 ).enableRLS();
 
+// ---------- Contactos bloqueados (no pueden hacer pedidos en la web) ----------
+
+export const BLOCK_KINDS = ["email", "phone"] as const;
+export type BlockKind = (typeof BLOCK_KINDS)[number];
+export const blockKindEnum = pgEnum("block_kind", BLOCK_KINDS);
+
+export const blockedContacts = pgTable(
+  "blocked_contacts",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    kind: blockKindEnum("kind").notNull(),
+    // Normalizado: email en minúsculas; teléfono = últimos 8 dígitos (ver contactKey).
+    value: text("value").notNull(),
+    // Lo que se ve en el panel (el email o teléfono como se cargó) y el motivo.
+    display: text("display").notNull(),
+    note: text("note"),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [uniqueIndex("blocked_contacts_kind_value_idx").on(t.kind, t.value)],
+).enableRLS();
+
 export type Category = typeof categories.$inferSelect;
 export type Product = typeof products.$inferSelect;
 export type ProductImage = typeof productImages.$inferSelect;
 export type Order = typeof orders.$inferSelect;
 export type OrderItem = typeof orderItems.$inferSelect;
+export type BlockedContact = typeof blockedContacts.$inferSelect;

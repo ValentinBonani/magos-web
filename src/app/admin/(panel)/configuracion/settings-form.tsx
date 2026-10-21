@@ -7,7 +7,11 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { saveSettings, type SettingsState } from "./actions";
 
-export function SettingsForm(props: { transferDiscountPercent: number; cashDiscountPercent: number }) {
+export function SettingsForm(props: {
+  transferDiscountPercent: number;
+  cashDiscountPercent: number;
+  whatsappButton: boolean;
+}) {
   const [state, formAction, pending] = useActionState<SettingsState, FormData>(saveSettings, {});
 
   // onSubmit para que React no vacíe los campos al guardar.
@@ -47,6 +51,20 @@ export function SettingsForm(props: { transferDiscountPercent: number; cashDisco
               />
             </div>
           </div>
+          <label className="flex items-start gap-2 text-sm">
+            <input
+              type="checkbox"
+              name="whatsappButton"
+              defaultChecked={props.whatsappButton}
+              className="mt-0.5 size-4 accent-primary"
+            />
+            <span>
+              Mostrar el botón flotante de WhatsApp en la tienda
+              <span className="block text-muted-foreground">
+                Los links de WhatsApp de Contacto y de los pedidos se ven siempre.
+              </span>
+            </span>
+          </label>
           {state.error && <p className="text-sm text-destructive">{state.error}</p>}
           {state.ok && <p className="text-sm text-green-700">Guardado.</p>}
           <Button type="submit" disabled={pending}>

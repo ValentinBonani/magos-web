@@ -2,18 +2,26 @@
 
 import { useActionState, useState } from "react";
 import { Button } from "@/components/ui/button";
-import type { OrderStatus, PaymentMethod } from "@/db/schema";
+import type { Channel, OrderStatus, PaymentMethod } from "@/db/schema";
 import { orderAction, type OrderActionState } from "../actions";
 
-type Props = { id: string; status: OrderStatus; paymentMethod: PaymentMethod; cancellable: boolean };
+type Props = {
+  id: string;
+  channel: Channel;
+  status: OrderStatus;
+  paymentMethod: PaymentMethod;
+  cancellable: boolean;
+  blocked: boolean;
+};
 
 // Botones según el estado del pedido. Cada uno manda "action" a la misma Server Action.
-export function OrderActions({ id, status, paymentMethod, cancellable }: Props) {
+export function OrderActions({ id, channel, status, paymentMethod, cancellable, blocked }: Props) {
   const [state, formAction, pending] = useActionState<OrderActionState, FormData>(
     orderAction.bind(null, id),
     {},
   );
   const [cancelling, setCancelling] = useState(false);
+  const [blocking, setBlocking] = useState(false);
 
   const primary: { action: string; label: string; hint?: string }[] = [];
   if (status === "pendiente_confirmacion") {
@@ -43,6 +51,9 @@ export function OrderActions({ id, status, paymentMethod, cancellable }: Props) 
     });
   }
 
+  const isCounterSale = channel === "mostrador";
+  const canVoid = isCounterSale && status === "entregado";
+
   return (
     <div className="space-y-3">
       {primary.map((p, i) => (
@@ -55,23 +66,23 @@ export function OrderActions({ id, status, paymentMethod, cancellable }: Props) 
         </form>
       ))}
 
-      {cancellable &&
+      {(cancellable || canVoid) &&
         (cancelling ? (
           <form action={formAction} className="space-y-2 rounded-lg border border-destructive/40 p-3">
-            <input type="hidden" name="action" value="cancel" />
+            <input type="hidden" name="action" value={canVoid ? "void" : "cancel"} />
             <label className="block space-y-1 text-sm">
-              <span>Motivo (le llega al cliente por email)</span>
+              <span>{canVoid ? "Motivo (queda en el historial)" : "Motivo (le llega al cliente por email)"}</span>
               <textarea
                 name="reason"
                 rows={2}
                 maxLength={300}
                 className="w-full rounded-lg border border-input bg-transparent px-2.5 py-1.5 text-sm outline-none focus-visible:border-ring"
-                placeholder="Ej.: No recibimos la transferencia."
+                placeholder={canVoid ? "Ej.: Se cargó mal / devolución." : "Ej.: No recibimos la transferencia."}
               />
             </label>
             <div className="flex gap-2">
               <Button type="submit" variant="destructive" size="sm" disabled={pending}>
-                Cancelar pedido
+                {canVoid ? "Anular venta" : "Cancelar pedido"}
               </Button>
               <Button type="button" variant="ghost" size="sm" onClick={() => setCancelling(false)}>
                 Volver
@@ -80,7 +91,31 @@ export function OrderActions({ id, status, paymentMethod, cancellable }: Props) 
           </form>
         ) : (
           <Button variant="ghost" className="w-full text-destructive" onClick={() => setCancelling(true)}>
-            Cancelar pedido…
+            {canVoid ? "Anular venta (devuelve el stock)…" : "Cancelar pedido…"}
+          </Button>
+        ))}
+
+      {!isCounterSale &&
+        !blocked &&
+        (blocking ? (
+          <form action={formAction} className="space-y-2 rounded-lg border border-destructive/40 p-3 text-sm">
+            <input type="hidden" name="action" value="block" />
+            <p>
+              El email y el teléfono de este pedido no van a poder hacer más pedidos en la web. Si
+              el pedido es falso, cancelalo también.
+            </p>
+            <div className="flex gap-2">
+              <Button type="submit" variant="destructive" size="sm" disabled={pending}>
+                Bloquear
+              </Button>
+              <Button type="button" variant="ghost" size="sm" onClick={() => setBlocking(false)}>
+                Volver
+              </Button>
+            </div>
+          </form>
+        ) : (
+          <Button variant="ghost" size="sm" className="w-full text-muted-foreground" onClick={() => setBlocking(true)}>
+            Bloquear email y teléfono…
           </Button>
         ))}
 

@@ -5,10 +5,12 @@ import {
   orderItems,
   orders,
   products,
+  type CounterPaymentMethod,
   type Order,
   type OrderStatus,
   type PaymentMethod,
 } from "@/db/schema";
+import { emailKey, isBlocked, phoneKey } from "@/lib/contacts";
 import { createPreference, getPayment, refundPayment } from "@/lib/mercadopago";
 import {
   sendAdminRefundFailedEmail,
@@ -26,7 +28,10 @@ import {
   CASH_CONFIRMATION_MS,
   computeTotals,
   MAX_CART_UNITS,
+  MAX_PENDING_PER_CONTACT,
+  MAX_PENDING_PER_IP,
   MP_RESERVATION_MS,
+  PENDING_STATUSES,
   TRANSFER_REMINDER_AFTER_MS,
   TRANSFER_RESERVATION_MS,
 } from "@/lib/order-rules";
@@ -81,35 +86,26 @@ export async function getOrderItems(orderId: string) {
 
 // ---------- Crear ----------
 
-export async function createOrder(input: {
-  lines: CartLine[];
-  paymentMethod: PaymentMethod;
-  customerName: string;
-  customerEmail: string;
-  customerPhone: string;
-  customerIp: string | null;
-}) {
-  // Juntar líneas repetidas y validar el límite de unidades.
+function mergeLines(lines: CartLine[]) {
   const quantities = new Map<string, number>();
-  for (const line of input.lines) {
+  for (const line of lines) {
     quantities.set(line.productId, (quantities.get(line.productId) ?? 0) + line.quantity);
   }
-  const totalUnits = [...quantities.values()].reduce((a, b) => a + b, 0);
-  if (totalUnits === 0) throw new OrderError("El carrito está vacío.");
-  if (totalUnits > MAX_CART_UNITS) {
-    throw new OrderError(`Podés llevar hasta ${MAX_CART_UNITS} unidades por pedido.`);
-  }
+  return quantities;
+}
 
-  // Precios y nombres siempre desde la base (nunca desde el navegador).
+// Precios y nombres siempre desde la base (nunca desde el navegador). `allowHidden`:
+// en el mostrador se puede vender un producto oculto en la web.
+async function priceItems(quantities: Map<string, number>, { allowHidden = false } = {}) {
   const rows = await db
     .select({ id: products.id, name: products.name, price: products.price, stock: products.stock, active: products.active })
     .from(products)
     .where(inArray(products.id, [...quantities.keys()]));
   const byId = new Map(rows.map((r) => [r.id, r]));
 
-  const items = [...quantities].map(([productId, quantity]) => {
+  return [...quantities].map(([productId, quantity]) => {
     const product = byId.get(productId);
-    if (!product || !product.active) throw new OrderError("Uno de los productos ya no está disponible.");
+    if (!product || (!product.active && !allowHidden)) throw new OrderError("Uno de los productos ya no está disponible.");
     if (product.stock < quantity) {
       throw new OrderError(
         product.stock === 0
@@ -119,6 +115,73 @@ export async function createOrder(input: {
     }
     return { productId, name: product.name, unitPrice: product.price, quantity };
   });
+}
+
+// Protección contra pedidos falsos que bloquean stock: contactos bloqueados y límite
+// de pedidos sin pagar por persona y por IP. Un pago de Mercado Pago que la misma
+// persona dejó sin terminar se cancela (lo reemplaza el pedido nuevo).
+async function checkCustomerLimits(input: { customerEmail: string; customerPhone: string; customerIp: string | null }) {
+  if (await isBlocked(input.customerEmail, input.customerPhone)) {
+    throw new OrderError("No pudimos tomar tu pedido por la web. Escribinos por WhatsApp y lo resolvemos.");
+  }
+
+  const pending = await db
+    .select({
+      id: orders.id,
+      number: orders.number,
+      status: orders.status,
+      customerEmail: orders.customerEmail,
+      customerPhone: orders.customerPhone,
+      customerIp: orders.customerIp,
+    })
+    .from(orders)
+    .where(and(eq(orders.channel, "web"), inArray(orders.status, PENDING_STATUSES), gte(orders.expiresAt, new Date())));
+
+  const email = emailKey(input.customerEmail);
+  const phone = phoneKey(input.customerPhone);
+  const sameContact = pending.filter((o) => emailKey(o.customerEmail) === email || phoneKey(o.customerPhone) === phone);
+
+  const abandonedMp = sameContact.filter((o) => o.status === "pendiente_mp");
+  const blocking = sameContact.filter((o) => o.status !== "pendiente_mp");
+  if (blocking.length >= MAX_PENDING_PER_CONTACT) {
+    throw new OrderError(
+      `Ya tenés un pedido pendiente (#${blocking[0].number}). Para hacer uno nuevo, primero cancelalo desde el link que te mandamos por email, o escribinos por WhatsApp.`,
+    );
+  }
+
+  const replaced = new Set(abandonedMp.map((o) => o.id));
+  const sameIp = input.customerIp
+    ? pending.filter((o) => o.customerIp === input.customerIp && !replaced.has(o.id))
+    : [];
+  if (sameIp.length >= MAX_PENDING_PER_IP) {
+    throw new OrderError("Hay muchos pedidos sin pagar desde tu conexión. Probá más tarde o escribinos por WhatsApp.");
+  }
+
+  for (const o of abandonedMp) {
+    await cancelOrder(o.id, "Se reemplazó por un pedido nuevo.", ["pendiente_mp"], { notify: false });
+  }
+}
+
+export type WebPaymentMethod = Exclude<PaymentMethod, "tarjeta">;
+
+export async function createOrder(input: {
+  lines: CartLine[];
+  paymentMethod: WebPaymentMethod;
+  customerName: string;
+  customerEmail: string;
+  customerPhone: string;
+  customerIp: string | null;
+}) {
+  // Juntar líneas repetidas y validar el límite de unidades.
+  const quantities = mergeLines(input.lines);
+  const totalUnits = [...quantities.values()].reduce((a, b) => a + b, 0);
+  if (totalUnits === 0) throw new OrderError("El carrito está vacío.");
+  if (totalUnits > MAX_CART_UNITS) {
+    throw new OrderError(`Podés llevar hasta ${MAX_CART_UNITS} unidades por pedido.`);
+  }
+
+  const items = await priceItems(quantities);
+  await checkCustomerLimits(input);
 
   const subtotal = items.reduce((sum, i) => sum + i.unitPrice * i.quantity, 0);
   const settings = await getSettings();
@@ -126,7 +189,7 @@ export async function createOrder(input: {
 
   // Transferencia y Mercado Pago reservan al instante; efectivo recién cuando el
   // admin confirma.
-  const flows: Record<PaymentMethod, { status: OrderStatus; reserve: boolean; ttl: number }> = {
+  const flows: Record<WebPaymentMethod, { status: OrderStatus; reserve: boolean; ttl: number }> = {
     transferencia: { status: "pendiente_pago", reserve: true, ttl: TRANSFER_RESERVATION_MS },
     mercadopago: { status: "pendiente_mp", reserve: true, ttl: MP_RESERVATION_MS },
     efectivo: { status: "pendiente_confirmacion", reserve: false, ttl: CASH_CONFIRMATION_MS },
@@ -271,6 +334,62 @@ export async function markDelivered(id: string) {
     const current = await lockOrder(tx, id);
     if (!current || !["pagado", "confirmado", "listo_para_retirar"].includes(current.status)) return null;
     return update(tx, id, { status: "entregado", stockReserved: false });
+  });
+}
+
+// El cliente cancela su pedido sin pagar desde el link (por ejemplo, para cambiar el
+// medio de pago). El token del link es la autorización.
+export async function cancelByCustomer(token: string) {
+  const [order] = await db.select({ id: orders.id }).from(orders).where(eq(orders.token, token)).limit(1);
+  if (!order) return null;
+  return cancelOrder(order.id, "Cancelaste el pedido.", PENDING_STATUSES);
+}
+
+// ---------- Mostrador ----------
+
+// Venta en el local: descuenta el stock y queda registrada como entregada.
+export async function createCounterSale(input: {
+  lines: CartLine[];
+  paymentMethod: CounterPaymentMethod;
+  customerName: string | null;
+}) {
+  const quantities = mergeLines(input.lines);
+  if (quantities.size === 0) throw new OrderError("Agregá al menos un producto.");
+  const items = await priceItems(quantities, { allowHidden: true });
+
+  const subtotal = items.reduce((sum, i) => sum + i.unitPrice * i.quantity, 0);
+  const totals = computeTotals(subtotal, discountFor(input.paymentMethod, await getSettings()));
+
+  return db.transaction(async (tx) => {
+    await reserveStock(tx, items);
+    const [created] = await tx
+      .insert(orders)
+      .values({
+        token: randomBytes(24).toString("base64url"),
+        channel: "mostrador",
+        status: "entregado",
+        paymentMethod: input.paymentMethod,
+        deliveryMethod: "retiro",
+        customerName: input.customerName || "Mostrador",
+        customerEmail: "",
+        customerPhone: "",
+        ...totals,
+        stockReserved: false,
+        expiresAt: null,
+      })
+      .returning();
+    await tx.insert(orderItems).values(items.map((i) => ({ ...i, orderId: created.id })));
+    return created;
+  });
+}
+
+// Anula una venta del mostrador (se cargó mal o hubo devolución): vuelve el stock.
+export async function voidCounterSale(id: string, reason: string) {
+  return db.transaction(async (tx) => {
+    const current = await lockOrder(tx, id);
+    if (!current || current.channel !== "mostrador" || current.status !== "entregado") return null;
+    await releaseStock(tx, id);
+    return update(tx, id, { status: "cancelado", cancelReason: reason });
   });
 }
 

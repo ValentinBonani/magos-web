@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { mercadoPagoEnabled } from "@/lib/mercadopago";
 import { getSettings } from "@/lib/settings";
 import { SITE } from "@/lib/site";
+import { turnstileSiteKey } from "@/lib/turnstile";
 import { CheckoutForm } from "./checkout-form";
 
 export const metadata: Metadata = { title: "Finalizar compra — Magos del Sur" };
@@ -16,6 +17,7 @@ export default async function CheckoutPage() {
         transferDiscount={settings.transferDiscountPercent}
         cashDiscount={settings.cashDiscountPercent}
         mercadoPagoEnabled={mercadoPagoEnabled()}
+        turnstileSiteKey={turnstileSiteKey()}
         pickup={{ address: `${SITE.address}, ${SITE.city}`, hours: SITE.hours }}
       />
     </div>

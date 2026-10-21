@@ -1,8 +1,7 @@
-import { SITE, whatsappUrl } from "@/lib/site";
+import { whatsappUrl } from "@/lib/site";
 
+// Se prende y apaga desde Configuración en el panel.
 export function WhatsappButton() {
-  if (!SITE.showWhatsappButton) return null;
-
   return (
     <a
       href={whatsappUrl("¡Hola! Tengo una consulta.")}

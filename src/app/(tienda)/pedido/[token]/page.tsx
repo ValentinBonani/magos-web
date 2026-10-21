@@ -5,10 +5,11 @@ import { buttonVariants } from "@/components/ui/button";
 import { db } from "@/db";
 import { orders, type Order } from "@/db/schema";
 import { formatPrice } from "@/lib/format";
-import { formatDateTime, PAYMENT_LABELS, STATUS_LABELS } from "@/lib/order-rules";
+import { formatDateTime, PAYMENT_LABELS, PENDING_STATUSES, STATUS_LABELS } from "@/lib/order-rules";
 import { getOrderItems, processMercadoPagoPayment } from "@/lib/orders";
 import { SITE, whatsappUrl } from "@/lib/site";
 import { cn } from "@/lib/utils";
+import { CancelOrder } from "./cancel-order";
 import { ReceiptUpload } from "./receipt-upload";
 
 export const metadata: Metadata = {
@@ -216,6 +217,9 @@ export default async function OrderPage({ params, searchParams }: PageProps<"/pe
       </div>
 
       <NextStep order={order} />
+      {PENDING_STATUSES.includes(order.status) && !(order.expiresAt && order.expiresAt < new Date()) && (
+        <CancelOrder token={order.token} />
+      )}
 
       <section className="space-y-3 rounded-xl border p-4">
         <h2 className="font-semibold">Detalle</h2>
