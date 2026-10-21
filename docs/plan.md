@@ -73,7 +73,11 @@ en Vercel para probar. Se marca el estado de cada etapa a medida que avanza.
 - ⬜ Aplicar migración y publicar (después de la prueba de la Etapa 3 del dueño).
 - ⬜ Credenciales de prueba (`MP_ACCESS_TOKEN`, `MP_WEBHOOK_SECRET`) en `.env.local` y
   Vercel; configurar el webhook en la aplicación de Mercado Pago.
-- ⬜ Prueba con cuentas de prueba de Mercado Pago.
+- ⬜ Prueba con cuentas de prueba de Mercado Pago. La aplicación de prueba se crea
+  desde la cuenta personal del dueño (2026-10-21).
+- ⬜ **Antes del lanzamiento:** crear la aplicación en la cuenta de Mercado Pago a nombre
+  de la hermana del dueño (titular de los cobros), cambiar `MP_ACCESS_TOKEN` y
+  `MP_WEBHOOK_SECRET` por los de esa cuenta (producción) y reconfigurar el webhook.
 
 ### Etapa 5 — Mostrador y protección · ⬜ pendiente
 - Registro de ventas del local (rápido de usar), descontando stock.

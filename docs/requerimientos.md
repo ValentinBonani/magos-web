@@ -183,6 +183,8 @@ el cliente paga). Medidas:
   mientras el cliente paga (el link de pago vence a la vez). Solo medios que acreditan al
   instante (tarjetas y dinero en cuenta; sin Rapipago/Pago Fácil). Si el pago llega
   tarde y ya no hay stock, se devuelve automáticamente.
+  - **Titular de los cobros:** cuenta de Mercado Pago a nombre de la hermana del dueño
+    (a crear). Las pruebas se hacen con una aplicación en la cuenta personal del dueño.
   - **Cuotas con interés a cargo del comprador:** sí, hasta 12 (definido 2026-10-18).
     No activar "cuotas sin interés" en la cuenta de Mercado Pago (las paga el vendedor).
 - **Sin cupones de descuento** en el lanzamiento.
