@@ -22,11 +22,13 @@ export const SITE = {
   notifyEmail: "contacto@magosdelsur.com.ar",
 };
 
-// URL pública del sitio, para los links de los emails.
+// Dominio principal (sin www redirige acá). Fijo para que los webhooks de Mercado Pago
+// no pasen por una redirección.
+const PRODUCTION_URL = "https://www.magosdelsur.com.ar";
+
+// URL pública del sitio, para los links de los emails y de Mercado Pago.
 export function siteUrl() {
-  if (process.env.VERCEL_ENV === "production" && process.env.VERCEL_PROJECT_PRODUCTION_URL) {
-    return `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`;
-  }
+  if (process.env.VERCEL_ENV === "production") return PRODUCTION_URL;
   if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`;
   return "http://localhost:3005";
 }
