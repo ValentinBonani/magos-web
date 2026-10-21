@@ -84,7 +84,10 @@ en Vercel para probar. Se marca el estado de cada etapa a medida que avanza.
 ### Etapa 6 — Marca y lanzamiento · ⬜ pendiente
 - Aplicar logo y colores; páginas Nosotros y Contacto.
 - Carga del catálogo real.
-- Dominio propio (`magosdelsur.com.ar` o similar) y revisión final.
+- ✅ Dominio propio `magosdelsur.com.ar` (2026-10-21): comprado en nic.ar y delegado a
+  Vercel DNS. Resend verificado; emails desde `contacto@magosdelsur.com.ar` (casilla en
+  Google Workspace, también recibe los avisos de pedidos).
+- Revisión final.
 
 ## Después del lanzamiento
 - Envíos a todo el país (cuando se elija la empresa de correo).

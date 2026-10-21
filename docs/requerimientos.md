@@ -39,7 +39,10 @@ Repo: https://github.com/ValentinBonani/magos-web
   - **Colores (elegidos por el dueño: la versión fiel a imprenta, más apagada):**
     violeta **#835CA3** (C55 M68 Y0 K0), violeta claro **#A88CC0** (C33 M41 Y0 K4),
     negro **#1D1D1B**. Definidos en `src/app/globals.css`.
-- **Dominio:** todavía no comprado. Probablemente `magosdelsur.com.ar` o similar.
+- **Dominio:** `magosdelsur.com.ar` (comprado en nic.ar, DNS en Vercel).
+- **Email del local:** `contacto@magosdelsur.com.ar` (Google Workspace). Es el remitente
+  de los emails de la tienda, recibe las respuestas de los clientes y los avisos de
+  pedidos, y se muestra en Contacto y en el pie.
 - **Ubicación del local:** Quilmes Centro, Provincia de Buenos Aires, Argentina.
 - **Tamaño del catálogo:** ~100 juegos distintos por ahora.
 

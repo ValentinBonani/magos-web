@@ -33,6 +33,11 @@ export function StoreFooter() {
               Instagram: @{SITE.instagram}
             </a>
           </p>
+          <p>
+            <a href={`mailto:${SITE.email}`} className="hover:text-white">
+              {SITE.email}
+            </a>
+          </p>
         </div>
       </div>
       <div className="border-t border-white/10">

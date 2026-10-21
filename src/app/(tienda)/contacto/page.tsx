@@ -32,7 +32,10 @@ export default function ContactPage() {
       <section className="space-y-3">
         <h2 className="font-semibold">Escribinos</h2>
         <p className="text-muted-foreground">
-          WhatsApp: {SITE.whatsappDisplay} · Instagram: @{SITE.instagram}
+          WhatsApp: {SITE.whatsappDisplay} · Instagram: @{SITE.instagram} · Email:{" "}
+          <a href={`mailto:${SITE.email}`} className="text-primary hover:underline">
+            {SITE.email}
+          </a>
         </p>
         <div className="flex flex-wrap gap-2">
           <a href={whatsappUrl("¡Hola! Tengo una consulta.")} target="_blank" rel="noopener" className={buttonVariants()}>

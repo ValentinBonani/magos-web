@@ -1,7 +1,9 @@
 // Envío de emails con Resend (https://resend.com/docs/api-reference/emails/send-email).
-// Mientras no haya dominio propio, Resend solo permite mandar a la casilla de la cuenta.
+// El dominio magosdelsur.com.ar está verificado en Resend (registros DNS en Vercel).
 
-const FROM = process.env.EMAIL_FROM ?? "Magos del Sur <onboarding@resend.dev>";
+import { SITE } from "./site";
+
+const FROM = process.env.EMAIL_FROM ?? `${SITE.name} <${SITE.email}>`;
 
 export async function sendEmail({ to, subject, html }: { to: string; subject: string; html: string }) {
   const apiKey = process.env.RESEND_API_KEY;

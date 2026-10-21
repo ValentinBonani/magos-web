@@ -16,8 +16,10 @@ export const SITE = {
     holder: "Valentin Bonani",
     bank: "Banco Galicia",
   },
-  // A dónde llegan los avisos de pedidos nuevos y comprobantes.
-  notifyEmail: "valentin.bonani@gmail.com",
+  // Casilla del local (Google Workspace): remitente de los emails, a donde llegan las
+  // respuestas de los clientes y los avisos de pedidos nuevos y comprobantes.
+  email: "contacto@magosdelsur.com.ar",
+  notifyEmail: "contacto@magosdelsur.com.ar",
 };
 
 // URL pública del sitio, para los links de los emails.
