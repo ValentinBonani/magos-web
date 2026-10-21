@@ -3,7 +3,7 @@
 // Uso: node --env-file=.env.local scripts/setup-cron.mjs [url-del-sitio]
 import postgres from "postgres";
 
-const siteUrl = (process.argv[2] ?? "https://magosdelsur.com.ar").replace(/\/$/, "");
+const siteUrl = (process.argv[2] ?? "https://www.magosdelsur.com.ar").replace(/\/$/, "");
 const secret = process.env.CRON_SECRET;
 if (!secret) {
   console.error("Falta CRON_SECRET en .env.local");

@@ -23,7 +23,8 @@ con panel de administración de juegos, stock y precios.
 - Pedidos: toda modificación de stock por pedidos pasa por `src/lib/orders.ts`. El
   stock de `products` es el disponible (lo reservado ya está descontado).
 - Datos provisorios del local (WhatsApp, banco, etc.) en `src/lib/site.ts`.
-- Web publicada: https://magosdelsur.com.ar (también https://magos-web.vercel.app).
+- Web publicada: https://www.magosdelsur.com.ar (principal; sin www redirige ahí;
+  también https://magos-web.vercel.app).
   DNS en Vercel (delegado desde nic.ar). Emails salen de contacto@magosdelsur.com.ar
   (Resend; casilla en Google Workspace).
 - Node.js en `C:\Program Files\nodejs` (la terminal puede necesitar recargar el PATH).
