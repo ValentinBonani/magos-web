@@ -213,8 +213,14 @@ el cliente paga). Medidas:
   - El dueño lleva los paquetes a la sucursal.
   - **Número de seguimiento** cargado en el pedido; el cliente lo recibe por email con
     link para seguir el envío.
-  - A definir: envío a domicilio y/o a sucursal; medios de pago con envío (en principio
-    transferencia y Mercado Pago, sin efectivo).
+  - **Envío a domicilio y a sucursal de Correo: elige el cliente** (definido 2026-10-21).
+  - **Con envío no se puede pagar en efectivo** (solo transferencia y Mercado Pago).
+  - **Checkout:** lo primero que se elige es la entrega (retiro en el local / envío a
+    domicilio / envío a sucursal de Correo); según eso se muestran los medios de pago
+    que corresponden.
+  - API MiCorreo (resumen en `docs/envios-correo.md`): las pruebas se hacen con una
+    cuenta MiCorreo del dueño; antes del lanzamiento se pasa a la cuenta de la hermana
+    (igual que Mercado Pago).
 - **Sin envío propio** (moto/cadete): todo va por la empresa de correo que se elija.
 
 ### Comunicación y redes

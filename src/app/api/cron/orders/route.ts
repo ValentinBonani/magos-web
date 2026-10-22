@@ -1,4 +1,5 @@
 import { timingSafeEqual } from "node:crypto";
+import { revalidatePath } from "next/cache";
 import { NextResponse, type NextRequest } from "next/server";
 import { processScheduledOrderTasks } from "@/lib/orders";
 
@@ -19,5 +20,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "No autorizado" }, { status: 401 });
   }
   const result = await processScheduledOrderTasks();
+  // Los vencimientos devuelven stock: regenerar las páginas estáticas (inicio, etc.).
+  if (result.expiredTransfers + result.expiredMp > 0) revalidatePath("/", "layout");
   return NextResponse.json(result);
 }

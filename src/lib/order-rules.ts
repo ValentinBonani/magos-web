@@ -67,6 +67,7 @@ const dateTimeFormatter = new Intl.DateTimeFormat("es-AR", {
   month: "numeric",
   hour: "2-digit",
   minute: "2-digit",
+  hourCycle: "h23",
 });
 
 // "17/10, 15:30" en horario de Argentina.

@@ -32,9 +32,12 @@ async function shrink(file: File): Promise<Blob> {
 export function ImageUploader({
   initialPaths,
   error,
+  max = MAX_IMAGES,
 }: {
   initialPaths: string[];
   error?: string;
+  // Eventos: una sola foto.
+  max?: number;
 }) {
   const [paths, setPaths] = useState(initialPaths);
   const [uploading, setUploading] = useState(0);
@@ -44,7 +47,7 @@ export function ImageUploader({
   async function handleFiles(files: FileList | null) {
     if (!files?.length) return;
     setUploadError(undefined);
-    const selected = Array.from(files).slice(0, MAX_IMAGES - paths.length);
+    const selected = Array.from(files).slice(0, max - paths.length);
     setUploading((n) => n + selected.length);
 
     // De a una, en orden, para no saturar la conexión.
@@ -83,7 +86,7 @@ export function ImageUploader({
                   sizes="200px"
                   className="object-cover"
                 />
-                {i === 0 && (
+                {i === 0 && max > 1 && (
                   <span className="absolute left-1 top-1 rounded bg-primary px-1.5 py-0.5 text-xs text-primary-foreground">
                     Principal
                   </span>
@@ -129,19 +132,19 @@ export function ImageUploader({
         <Button
           type="button"
           variant="outline"
-          disabled={uploading > 0 || paths.length >= MAX_IMAGES}
+          disabled={uploading > 0 || paths.length >= max}
           onClick={() => inputRef.current?.click()}
         >
-          {uploading > 0 ? `Subiendo ${uploading}…` : "Agregar fotos"}
+          {uploading > 0 ? `Subiendo ${uploading}…` : max === 1 ? "Elegir foto" : "Agregar fotos"}
         </Button>
         <span className="text-sm text-muted-foreground">
-          La primera es la principal. Máximo {MAX_IMAGES}.
+          {max === 1 ? "Opcional." : `La primera es la principal. Máximo ${max}.`}
         </span>
         <input
           ref={inputRef}
           type="file"
           accept="image/*"
-          multiple
+          multiple={max > 1}
           hidden
           onChange={(e) => handleFiles(e.target.files)}
         />

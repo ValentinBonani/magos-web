@@ -1,3 +1,4 @@
+import { revalidatePath } from "next/cache";
 import { NextResponse, type NextRequest } from "next/server";
 import { verifyWebhookSignature } from "@/lib/mercadopago";
 import { processMercadoPagoPayment } from "@/lib/orders";
@@ -30,6 +31,8 @@ export async function POST(request: NextRequest) {
 
   try {
     const result = await processMercadoPagoPayment(dataId);
+    // Pago tardío que volvió a reservar stock.
+    if (result.handled && result.outcome === "late_paid") revalidatePath("/", "layout");
     return NextResponse.json(result);
   } catch (error) {
     console.error(`[mp] Error procesando el pago ${dataId}:`, error);

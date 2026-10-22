@@ -36,6 +36,13 @@
       "when": 1792623362365,
       "tag": "0004_mostrador",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1792631988528,
+      "tag": "0005_eventos",
+      "breakpoints": true
     }
   ]
 }

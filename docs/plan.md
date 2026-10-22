@@ -120,11 +120,16 @@ Orden acordado: Excel → eventos → stock bajo → estadísticas → clientes 
   ID = nuevo (se crea oculto, sin fotos). Stock: columna oculta "Stock al exportar"; si
   no se editó, se respeta el de la base. Prueba automática (16 casos) OK.
   ⬜ Prueba del dueño.
-- ⬜ Eventos.
+- 🟡 **Eventos** (migración `0005_eventos`, aplicada): panel `/admin/eventos` (título,
+  fecha y hora, descripción, imagen opcional en el bucket de fotos) y tienda `/eventos`
+  (próximos arriba en orden de fecha, pasados abajo; un evento sigue "próximo" hasta 6 hs
+  después de empezar). Fechas en hora de Argentina (`src/lib/format.ts`).
+  ⬜ Prueba del dueño.
 - ⬜ Stock bajo: aviso en el panel + email diario.
 - ⬜ Estadísticas: ventas por período (web/mostrador), más vendidos, gráfico por día.
 - ⬜ Listado de clientes.
-- ⬜ Envíos por Correo Argentino (ver requerimientos).
+- ⬜ Envíos por Correo Argentino (ver requerimientos y `docs/envios-correo.md`).
+  Esperando credenciales de la API MiCorreo (test y producción) que pide el dueño.
 - Contacto con mapa, WhatsApp, email y horarios: ✅ (2026-10-21).
 
 ## Después del lanzamiento

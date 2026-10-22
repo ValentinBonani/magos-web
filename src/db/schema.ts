@@ -217,6 +217,26 @@ export const settings = pgTable(
   ],
 ).enableRLS();
 
+// ---------- Eventos del local (torneos, noches de juego...) ----------
+
+export const events = pgTable(
+  "events",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    title: text("title").notNull(),
+    description: text("description").notNull(),
+    startsAt: timestamp("starts_at", { withTimezone: true }).notNull(),
+    // Foto opcional, en el bucket "product-images".
+    imagePath: text("image_path"),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+    updatedAt: timestamp("updated_at", { withTimezone: true })
+      .notNull()
+      .defaultNow()
+      .$onUpdate(() => new Date()),
+  },
+  (t) => [index("events_starts_at_idx").on(t.startsAt)],
+).enableRLS();
+
 // ---------- Contactos bloqueados (no pueden hacer pedidos en la web) ----------
 
 export const BLOCK_KINDS = ["email", "phone"] as const;
@@ -244,3 +264,4 @@ export type ProductImage = typeof productImages.$inferSelect;
 export type Order = typeof orders.$inferSelect;
 export type OrderItem = typeof orderItems.$inferSelect;
 export type BlockedContact = typeof blockedContacts.$inferSelect;
+export type Event = typeof events.$inferSelect;
