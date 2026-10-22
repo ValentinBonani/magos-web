@@ -98,7 +98,8 @@ en Vercel para probar. Se marca el estado de cada etapa a medida que avanza.
 - ✅ Captcha Cloudflare Turnstile (`src/lib/turnstile.ts`): **inactivo hasta cargar**
   `NEXT_PUBLIC_TURNSTILE_SITE_KEY` y `TURNSTILE_SECRET_KEY` en Vercel.
 - ✅ Prueba automática (20 casos) contra la base.
-- ⬜ Claves de Turnstile (cuenta de Cloudflare del dueño).
+- ✅ Claves de Turnstile en Vercel (widget invisible, cuenta de Cloudflare del dueño);
+  pedido de prueba en producción OK (2026-10-21).
 - ⬜ Prueba del dueño.
 
 ### Etapa 6 — Marca y lanzamiento · ⬜ pendiente
