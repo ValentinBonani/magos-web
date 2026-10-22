@@ -82,7 +82,7 @@ en Vercel para probar. Se marca el estado de cada etapa a medida que avanza.
   de la hermana del dueño (titular de los cobros), cambiar `MP_ACCESS_TOKEN` y
   `MP_WEBHOOK_SECRET` por los de esa cuenta (producción) y reconfigurar el webhook.
 
-### Etapa 5 — Mostrador y protección · 🟡 en prueba
+### Etapa 5 — Mostrador y protección · ✅ lista (probada por el dueño, 2026-10-21)
 - ✅ Migración `0004_mostrador` (aplicada): `orders.channel` (web/mostrador), medio de
   pago `tarjeta`, tabla `blocked_contacts`, `settings.whatsapp_button`.
 - ✅ Mostrador (`/admin/mostrador`): buscador (Enter agrega), cantidades, medio de pago
@@ -100,7 +100,7 @@ en Vercel para probar. Se marca el estado de cada etapa a medida que avanza.
 - ✅ Prueba automática (20 casos) contra la base.
 - ✅ Claves de Turnstile en Vercel (widget invisible, cuenta de Cloudflare del dueño);
   pedido de prueba en producción OK (2026-10-21).
-- ⬜ Prueba del dueño.
+- ✅ Prueba del dueño: mostrador, pedido pendiente, bloqueos y botón de WhatsApp.
 
 ### Etapa 6 — Marca y lanzamiento · ⬜ pendiente
 - Aplicar logo y colores; páginas Nosotros y Contacto.
@@ -108,7 +108,8 @@ en Vercel para probar. Se marca el estado de cada etapa a medida que avanza.
 - ✅ Dominio propio `magosdelsur.com.ar` (2026-10-21): comprado en nic.ar y delegado a
   Vercel DNS. Resend verificado; emails desde `contacto@magosdelsur.com.ar` (casilla en
   Google Workspace, también recibe los avisos de pedidos).
-- Revisión final.
+- Revisión final. Antes de abrir: borrar pedidos y ventas de prueba y reiniciar la
+  numeración en #1001; pasar Mercado Pago a la cuenta definitiva (ver Etapa 4).
 
 ## Después del lanzamiento
 - Envíos a todo el país (cuando se elija la empresa de correo).
