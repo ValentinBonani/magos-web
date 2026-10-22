@@ -1,4 +1,4 @@
-import { and, desc, eq, sql } from "drizzle-orm";
+import { and, asc, desc, eq, sql } from "drizzle-orm";
 import Image from "next/image";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
@@ -23,6 +23,7 @@ import {
 } from "@/db/schema";
 import { requireAdmin } from "@/lib/auth";
 import { formatPrice } from "@/lib/format";
+import { countLowStock, LOW_STOCK_THRESHOLD, lowStockCondition } from "@/lib/low-stock";
 import { productImageUrl } from "@/lib/storage";
 
 export default async function ProductsPage({ searchParams }: PageProps<"/admin/productos">) {
@@ -32,8 +33,10 @@ export default async function ProductsPage({ searchParams }: PageProps<"/admin/p
   const section = SECTIONS.includes(params.seccion as Section)
     ? (params.seccion as Section)
     : undefined;
+  const lowStock = params.stock === "bajo";
 
-  const rows = await db
+  const [rows, lowStockCount] = await Promise.all([
+    db
     .select({
       id: products.id,
       name: products.name,
@@ -56,14 +59,18 @@ export default async function ProductsPage({ searchParams }: PageProps<"/admin/p
           ? sql`extensions.unaccent(${products.name}) ilike extensions.unaccent(${`%${q.replace(/[%_\\]/g, "\\$&")}%`})`
           : undefined,
         section ? eq(categories.section, section) : undefined,
+        lowStock ? lowStockCondition : undefined,
       ),
     )
-    .orderBy(desc(products.createdAt));
+    .orderBy(...(lowStock ? [asc(products.stock), asc(products.name)] : [desc(products.createdAt)])),
+    countLowStock(),
+  ]);
 
-  const filterHref = (s?: Section) => {
+  const filterHref = (s?: Section, low = lowStock) => {
     const sp = new URLSearchParams();
     if (q) sp.set("q", q);
     if (s) sp.set("seccion", s);
+    if (low) sp.set("stock", "bajo");
     const qs = sp.toString();
     return `/admin/productos${qs ? `?${qs}` : ""}`;
   };
@@ -95,6 +102,7 @@ export default async function ProductsPage({ searchParams }: PageProps<"/admin/p
       <div className="flex flex-wrap items-center gap-2">
         <form className="flex gap-2">
           {section && <input type="hidden" name="seccion" value={section} />}
+          {lowStock && <input type="hidden" name="stock" value="bajo" />}
           <Input name="q" defaultValue={q} placeholder="Buscar por nombre…" className="w-56" />
           <button type="submit" className={buttonVariants({ variant: "outline" })}>
             Buscar
@@ -116,12 +124,21 @@ export default async function ProductsPage({ searchParams }: PageProps<"/admin/p
               {SECTION_LABELS[s]}
             </Link>
           ))}
+          <Link
+            href={filterHref(section, !lowStock)}
+            className={buttonVariants({ variant: lowStock ? "secondary" : "ghost", size: "sm" })}
+          >
+            Stock bajo
+            {lowStockCount > 0 && (
+              <span className="ml-1 rounded-full bg-amber-500 px-1.5 text-xs text-white">{lowStockCount}</span>
+            )}
+          </Link>
         </div>
       </div>
 
       {rows.length === 0 ? (
         <p className="py-12 text-center text-muted-foreground">
-          {q || section ? "No hay productos con ese filtro." : "Todavía no cargaste productos."}
+          {lowStock && !q && !section ? "No hay productos visibles con stock bajo." : q || section || lowStock ? "No hay productos con ese filtro." : "Todavía no cargaste productos."}
         </p>
       ) : (
         <div className="overflow-x-auto rounded-lg border">
@@ -164,6 +181,8 @@ export default async function ProductsPage({ searchParams }: PageProps<"/admin/p
                   <TableCell className="text-right">
                     {p.stock === 0 ? (
                       <span className="text-destructive">Agotado</span>
+                    ) : p.stock <= LOW_STOCK_THRESHOLD ? (
+                      <span className="font-medium text-amber-600">{p.stock}</span>
                     ) : (
                       p.stock
                     )}

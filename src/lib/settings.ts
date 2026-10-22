@@ -4,7 +4,16 @@ import { settings, type PaymentMethod } from "@/db/schema";
 
 export async function getSettings() {
   const [row] = await db.select().from(settings).where(eq(settings.id, 1)).limit(1);
-  return row ?? { id: 1, transferDiscountPercent: 10, cashDiscountPercent: 15, whatsappButton: true };
+  return (
+    row ?? {
+      id: 1,
+      transferDiscountPercent: 10,
+      cashDiscountPercent: 15,
+      whatsappButton: true,
+      lowStockReportDay: null,
+      lowStockReportIds: [],
+    }
+  );
 }
 
 // Mismos descuentos en la web y en el mostrador; Mercado Pago y tarjeta, sin descuento.

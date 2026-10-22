@@ -229,6 +229,26 @@ export async function sendAdminRefundFailedEmail(order: Order, paymentId: string
   });
 }
 
+type LowStockItem = { name: string; stock: number };
+
+export async function sendAdminLowStockEmail(newItems: LowStockItem[], otherItems: LowStockItem[]) {
+  const list = (items: LowStockItem[]) =>
+    `<ul style="margin:0 0 16px;padding-left:20px;line-height:1.6">${items
+      .map((i) => `<li>${escapeHtml(i.name)} — ${i.stock === 0 ? "<b>agotado</b>" : `queda ${i.stock}`}</li>`)
+      .join("")}</ul>`;
+  return sendEmail({
+    to: SITE.notifyEmail,
+    subject: `Stock bajo: ${newItems.length} ${newItems.length === 1 ? "producto nuevo" : "productos nuevos"}`,
+    html: layout(
+      "Productos con stock bajo",
+      p("Desde el último aviso, estos productos se agotaron o les queda 1 unidad:") +
+        list(newItems) +
+        (otherItems.length ? p("Siguen así desde antes:") + list(otherItems) : "") +
+        button(`${siteUrl()}/admin/productos?stock=bajo`, "Ver en el panel"),
+    ),
+  });
+}
+
 export async function sendAdminReceiptEmail(order: Order) {
   return sendEmail({
     to: SITE.notifyEmail,

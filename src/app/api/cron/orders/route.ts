@@ -1,9 +1,10 @@
 import { timingSafeEqual } from "node:crypto";
 import { revalidatePath } from "next/cache";
 import { NextResponse, type NextRequest } from "next/server";
+import { processLowStockReport } from "@/lib/low-stock";
 import { processScheduledOrderTasks } from "@/lib/orders";
 
-// Vencimientos y recordatorios de pedidos. La llama pg_cron (Supabase) cada 5 minutos
+// Vencimientos y recordatorios de pedidos, y el aviso diario de stock bajo. La llama pg_cron (Supabase) cada 5 minutos
 // con el header "Authorization: Bearer <CRON_SECRET>" (ver scripts/setup-cron.mjs).
 
 function authorized(request: NextRequest) {
@@ -22,5 +23,6 @@ export async function POST(request: NextRequest) {
   const result = await processScheduledOrderTasks();
   // Los vencimientos devuelven stock: regenerar las páginas estáticas (inicio, etc.).
   if (result.expiredTransfers + result.expiredMp > 0) revalidatePath("/", "layout");
-  return NextResponse.json(result);
+  const lowStockReportSent = await processLowStockReport();
+  return NextResponse.json({ ...result, lowStockReportSent });
 }

@@ -6,6 +6,7 @@ import { buttonVariants } from "@/components/ui/button";
 import { db } from "@/db";
 import { orders } from "@/db/schema";
 import { requireAdmin } from "@/lib/auth";
+import { countLowStock } from "@/lib/low-stock";
 import { NEEDS_ATTENTION } from "@/lib/order-rules";
 import { signOut } from "../actions";
 
@@ -22,10 +23,10 @@ const NAV = [
 
 export default async function PanelLayout({ children }: LayoutProps<"/admin">) {
   const admin = await requireAdmin();
-  const [{ pending }] = await db
-    .select({ pending: count() })
-    .from(orders)
-    .where(inArray(orders.status, NEEDS_ATTENTION));
+  const [[{ pending }], lowStock] = await Promise.all([
+    db.select({ pending: count() }).from(orders).where(inArray(orders.status, NEEDS_ATTENTION)),
+    countLowStock(),
+  ]);
 
   return (
     <div className="flex flex-1 flex-col">
@@ -54,6 +55,11 @@ export default async function PanelLayout({ children }: LayoutProps<"/admin">) {
                 {item.href === "/admin/pedidos" && pending > 0 && (
                   <span className="ml-1 rounded-full bg-primary px-1.5 text-xs text-primary-foreground">
                     {pending}
+                  </span>
+                )}
+                {item.href === "/admin/productos" && lowStock > 0 && (
+                  <span className="ml-1 rounded-full bg-amber-500 px-1.5 text-xs text-white" title="Productos con stock bajo">
+                    {lowStock}
                   </span>
                 )}
               </Link>

@@ -207,6 +207,10 @@ export const settings = pgTable(
     cashDiscountPercent: integer("cash_discount_percent").notNull().default(15),
     // Botón flotante de WhatsApp en la tienda.
     whatsappButton: boolean("whatsapp_button").notNull().default(true),
+    // Email diario de stock bajo: último día enviado (AAAA-MM-DD, hora de Argentina) y
+    // productos que figuraban, para avisar solo cuando hay alguno nuevo.
+    lowStockReportDay: text("low_stock_report_day"),
+    lowStockReportIds: uuid("low_stock_report_ids").array().notNull().default(sql`'{}'::uuid[]`),
   },
   (t) => [
     check("settings_single_row", sql`${t.id} = 1`),

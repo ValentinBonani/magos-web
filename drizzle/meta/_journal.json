@@ -43,6 +43,13 @@
       "when": 1792631988528,
       "tag": "0005_eventos",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1792633447255,
+      "tag": "0006_stock_bajo",
+      "breakpoints": true
     }
   ]
 }

@@ -120,12 +120,19 @@ Orden acordado: Excel → eventos → stock bajo → estadísticas → clientes 
   ID = nuevo (se crea oculto, sin fotos). Stock: columna oculta "Stock al exportar"; si
   no se editó, se respeta el de la base. Prueba automática (16 casos) OK.
   ⬜ Prueba del dueño.
-- 🟡 **Eventos** (migración `0005_eventos`, aplicada): panel `/admin/eventos` (título,
+- ✅ **Eventos** (migración `0005_eventos`, aplicada): panel `/admin/eventos` (título,
   fecha y hora, descripción, imagen opcional en el bucket de fotos) y tienda `/eventos`
   (próximos arriba en orden de fecha, pasados abajo; un evento sigue "próximo" hasta 6 hs
   después de empezar). Fechas en hora de Argentina (`src/lib/format.ts`).
+  ✅ Probado por el dueño (2026-10-21). Más adelante: retoques visuales (no lo convence
+  del todo cómo se ven).
+- 🟡 **Stock bajo** (`src/lib/low-stock.ts`, migración `0006_stock_bajo`, aplicada):
+  productos visibles con 1 unidad o menos. Panel: contador naranja en el menú
+  Productos y filtro "Stock bajo" (`/admin/productos?stock=bajo`). Email a
+  `contacto@` una vez por día desde las 9 hs (lo dispara la tarea automática de
+  pedidos), solo si hay productos nuevos con stock bajo desde el aviso anterior; lista
+  los nuevos y los que siguen así. Prueba automática (8 casos) OK.
   ⬜ Prueba del dueño.
-- ⬜ Stock bajo: aviso en el panel + email diario.
 - ⬜ Estadísticas: ventas por período (web/mostrador), más vendidos, gráfico por día.
 - ⬜ Listado de clientes.
 - ⬜ Envíos por Correo Argentino (ver requerimientos y `docs/envios-correo.md`).
