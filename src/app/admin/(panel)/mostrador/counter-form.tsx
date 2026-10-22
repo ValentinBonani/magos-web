@@ -176,7 +176,7 @@ export function CounterForm({
       <aside className="h-fit space-y-4 rounded-xl border p-4">
         <div className="space-y-2">
           <p className="text-sm font-medium">Medio de pago</p>
-          <div className="grid grid-cols-3 gap-2">
+          <div className="grid gap-2">
             {COUNTER_PAYMENT_METHODS.map((m) => {
               const off = m === "efectivo" ? cashDiscount : m === "transferencia" ? transferDiscount : 0;
               return (
@@ -185,12 +185,12 @@ export function CounterForm({
                   type="button"
                   onClick={() => setMethod(m)}
                   className={cn(
-                    "rounded-lg border px-2 py-2 text-sm transition-colors",
+                    "flex items-center justify-between gap-2 rounded-lg border px-3 py-2.5 text-left text-sm transition-colors",
                     method === m ? "border-primary bg-primary/10 font-medium" : "hover:bg-muted/50",
                   )}
                 >
-                  {COUNTER_PAYMENT_LABELS[m]}
-                  {off > 0 && <span className="block text-xs text-muted-foreground">−{off}%</span>}
+                  <span>{COUNTER_PAYMENT_LABELS[m]}</span>
+                  {off > 0 && <span className="text-xs text-muted-foreground">−{off}%</span>}
                 </button>
               );
             })}
