@@ -164,10 +164,15 @@ el cliente paga). Medidas:
     para facturar a mano al final del día).
 - **Notificación de pedidos nuevos al admin:** por **email** y visibles en el panel.
   (Sin WhatsApp automático.)
-- **Para el final del desarrollo (no prioritarias):**
-  - Alerta de stock bajo (1 unidad o menos).
-  - Estadísticas (ventas del día/mes, más vendidos).
-  - Listado de clientes.
+- **Importar/exportar catálogo (definido 2026-10-21):** exportar a Excel, importar para
+  dar de alta productos nuevos **y actualizar los existentes**. Los productos que no
+  están en la planilla **no se tocan** (para borrar u ocultar se usa el panel).
+- **Alerta de stock bajo (1 unidad o menos):** aviso en el panel (lista/filtro) + **email
+  diario** a la mañana con lo que quedó con stock bajo o agotado.
+- **Estadísticas:** ventas por período (hoy, semana, mes, rango; total, cantidad, ticket
+  promedio; web/mostrador), más vendidos (unidades y plata) y gráfico de ventas por día.
+  (Por medio de pago no hace falta en las estadísticas.)
+- **Listado de clientes** (de los pedidos web).
 
 ### Notificaciones al cliente (definidas hasta ahora)
 - Confirmación de pedido (con número, link único y, si es transferencia, datos

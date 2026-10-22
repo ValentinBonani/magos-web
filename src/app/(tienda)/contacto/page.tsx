@@ -1,51 +1,63 @@
 import type { Metadata } from "next";
 import { buttonVariants } from "@/components/ui/button";
-import { instagramUrl, mapsUrl, SITE, whatsappUrl } from "@/lib/site";
+import { instagramUrl, mapsEmbedUrl, mapsUrl, SITE, whatsappUrl } from "@/lib/site";
 
 export const metadata: Metadata = { title: "Contacto — Magos del Sur" };
 
+function Card({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <section className="space-y-2 rounded-xl border p-4">
+      <h2 className="font-semibold">{title}</h2>
+      {children}
+    </section>
+  );
+}
+
 export default function ContactPage() {
   return (
-    <div className="mx-auto max-w-2xl space-y-8">
+    <div className="mx-auto max-w-4xl space-y-6">
       <h1 className="text-3xl font-semibold">Contacto</h1>
 
-      <section className="grid gap-6 sm:grid-cols-2">
-        <div className="space-y-2">
-          <h2 className="font-semibold">Dirección</h2>
-          <p>
-            {SITE.address}
-            <br />
-            {SITE.city}
-          </p>
-          <a href={mapsUrl} target="_blank" rel="noopener" className="text-sm text-primary hover:underline">
-            Ver en Google Maps
+      <div className="grid gap-4 sm:grid-cols-2">
+        <Card title="WhatsApp">
+          <p>{SITE.whatsappDisplay}</p>
+          <a href={whatsappUrl("¡Hola! Tengo una consulta.")} target="_blank" rel="noopener" className={buttonVariants({ size: "sm" })}>
+            Escribir por WhatsApp
           </a>
-        </div>
-        <div className="space-y-2">
-          <h2 className="font-semibold">Horarios</h2>
+        </Card>
+        <Card title="Email">
+          <p className="break-all">{SITE.email}</p>
+          <a href={`mailto:${SITE.email}`} className={buttonVariants({ variant: "outline", size: "sm" })}>
+            Mandar un email
+          </a>
+        </Card>
+        <Card title="Horarios">
           {SITE.hours.map((h) => (
             <p key={h}>{h}</p>
           ))}
-        </div>
-      </section>
+        </Card>
+        <Card title="Dirección">
+          <p>
+            {SITE.address}, {SITE.city}
+          </p>
+          <p className="flex flex-wrap gap-x-4 gap-y-1 text-sm">
+            <a href={mapsUrl} target="_blank" rel="noopener" className="text-primary hover:underline">
+              Cómo llegar
+            </a>
+            <a href={instagramUrl} target="_blank" rel="noopener" className="text-primary hover:underline">
+              Instagram @{SITE.instagram}
+            </a>
+          </p>
+        </Card>
+      </div>
 
-      <section className="space-y-3">
-        <h2 className="font-semibold">Escribinos</h2>
-        <p className="text-muted-foreground">
-          WhatsApp: {SITE.whatsappDisplay} · Instagram: @{SITE.instagram} · Email:{" "}
-          <a href={`mailto:${SITE.email}`} className="text-primary hover:underline">
-            {SITE.email}
-          </a>
-        </p>
-        <div className="flex flex-wrap gap-2">
-          <a href={whatsappUrl("¡Hola! Tengo una consulta.")} target="_blank" rel="noopener" className={buttonVariants()}>
-            Escribir por WhatsApp
-          </a>
-          <a href={instagramUrl} target="_blank" rel="noopener" className={buttonVariants({ variant: "outline" })}>
-            Ver Instagram
-          </a>
-        </div>
-      </section>
+      <iframe
+        src={mapsEmbedUrl}
+        title={`Mapa: ${SITE.address}, ${SITE.city}`}
+        className="aspect-[4/3] w-full rounded-xl border sm:aspect-[2/1]"
+        loading="lazy"
+        referrerPolicy="no-referrer-when-downgrade"
+      />
     </div>
   );
 }

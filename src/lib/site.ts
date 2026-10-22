@@ -38,6 +38,9 @@ export function whatsappUrl(message?: string) {
 
 export const instagramUrl = `https://instagram.com/${SITE.instagram}`;
 
-export const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
-  `${SITE.address}, Quilmes, Buenos Aires`,
-)}`;
+const mapsQuery = encodeURIComponent(`${SITE.address}, Quilmes, Buenos Aires`);
+
+export const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${mapsQuery}`;
+
+// Mapa embebido de Google Maps (no necesita clave de API).
+export const mapsEmbedUrl = `https://www.google.com/maps?q=${mapsQuery}&output=embed`;
