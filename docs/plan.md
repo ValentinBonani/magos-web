@@ -111,6 +111,22 @@ en Vercel para probar. Se marca el estado de cada etapa a medida que avanza.
 - Revisión final. Antes de abrir: borrar pedidos y ventas de prueba y reiniciar la
   numeración en #1001; pasar Mercado Pago a la cuenta definitiva (ver Etapa 4).
 
+### Etapa 7 — Funcionalidades del tintero · 🟡 en curso (adelantadas antes del lanzamiento)
+Orden acordado: Excel → eventos → stock bajo → estadísticas → clientes → envíos.
+- 🟡 **Importar/exportar catálogo** (`src/lib/catalog-sheet.ts`, exceljs 4.4.0 con
+  override de uuid 11.1.1): exportar en Productos (`/admin/productos-excel`, sirve de
+  plantilla, con desplegables y hoja "Listas"); importar en `/admin/productos/importar`
+  con vista previa de cambios, errores por fila y avisos; aplica todo o nada. Fila sin
+  ID = nuevo (se crea oculto, sin fotos). Stock: columna oculta "Stock al exportar"; si
+  no se editó, se respeta el de la base. Prueba automática (16 casos) OK.
+  ⬜ Prueba del dueño.
+- ⬜ Eventos.
+- ⬜ Stock bajo: aviso en el panel + email diario.
+- ⬜ Estadísticas: ventas por período (web/mostrador), más vendidos, gráfico por día.
+- ⬜ Listado de clientes.
+- ⬜ Envíos por Correo Argentino (ver requerimientos).
+- Contacto con mapa, WhatsApp, email y horarios: ✅ (2026-10-21).
+
 ## Después del lanzamiento
 - Envíos a todo el país (cuando se elija la empresa de correo).
 - Eventos (próximos arriba, pasados abajo).

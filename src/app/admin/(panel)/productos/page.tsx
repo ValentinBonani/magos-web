@@ -72,9 +72,17 @@ export default async function ProductsPage({ searchParams }: PageProps<"/admin/p
     <div className="space-y-4">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <h1 className="text-2xl font-semibold">Productos</h1>
-        <Link href="/admin/productos/nuevo" className={buttonVariants()}>
-          + Nuevo producto
-        </Link>
+        <div className="flex flex-wrap gap-2">
+          <a href="/admin/productos-excel" download className={buttonVariants({ variant: "outline" })}>
+            Exportar a Excel
+          </a>
+          <Link href="/admin/productos/importar" className={buttonVariants({ variant: "outline" })}>
+            Importar
+          </Link>
+          <Link href="/admin/productos/nuevo" className={buttonVariants()}>
+            + Nuevo producto
+          </Link>
+        </div>
       </div>
 
       {params.guardado && (

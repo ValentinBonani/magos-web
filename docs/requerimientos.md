@@ -205,8 +205,16 @@ el cliente paga). Medidas:
 
 ### Envíos y retiro
 - **Retiro en el local:** se muestra dirección, horarios y teléfono de contacto.
-- **Envíos por correo a todo el país:** sí. **Empresa y forma de cobro a definir en una
-  etapa próxima** (fijo / por zonas / calculado / gratis desde monto).
+- **Envíos por correo a todo el país (definido 2026-10-21):** por **Correo Argentino**.
+  - Costo **calculado automático** con la tarifa de Correo Argentino (por código postal
+    y peso/tamaño). Requiere credenciales de la API de Correo Argentino (MiCorreo) y
+    cargar peso y medidas en cada producto.
+  - **Sin envío gratis** por ahora.
+  - El dueño lleva los paquetes a la sucursal.
+  - **Número de seguimiento** cargado en el pedido; el cliente lo recibe por email con
+    link para seguir el envío.
+  - A definir: envío a domicilio y/o a sucursal; medios de pago con envío (en principio
+    transferencia y Mercado Pago, sin efectivo).
 - **Sin envío propio** (moto/cadete): todo va por la empresa de correo que se elija.
 
 ### Comunicación y redes
