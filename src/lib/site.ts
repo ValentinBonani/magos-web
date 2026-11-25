@@ -5,7 +5,7 @@ export const SITE = {
   // Número de WhatsApp en formato internacional, sin + ni espacios (Argentina: 549 + área + número).
   whatsapp: "5491177420866",
   whatsappDisplay: "11 7742-0866",
-  instagram: "valentin.bonani",
+  instagram: "magosdelsur.quilmes",
   address: "Alvear 850",
   city: "Quilmes Centro, Buenos Aires",
   hours: ["Martes a viernes de 10 a 19 hs", "Sábados de 10 a 18 hs"],
