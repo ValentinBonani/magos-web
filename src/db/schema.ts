@@ -207,6 +207,8 @@ export const settings = pgTable(
     cashDiscountPercent: integer("cash_discount_percent").notNull().default(15),
     // Botón flotante de WhatsApp en la tienda.
     whatsappButton: boolean("whatsapp_button").notNull().default(true),
+    // Franja "Web en construcción" arriba de todo en la tienda.
+    constructionBanner: boolean("construction_banner").notNull().default(true),
     // Email diario de stock bajo: último día enviado (AAAA-MM-DD, hora de Argentina) y
     // productos que figuraban, para avisar solo cuando hay alguno nuevo.
     lowStockReportDay: text("low_stock_report_day"),

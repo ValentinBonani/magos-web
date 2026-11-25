@@ -20,11 +20,17 @@ export async function saveSettings(_prev: SettingsState, formData: FormData): Pr
   await requireAdmin();
 
   const parsed = z
-    .object({ transferDiscountPercent: percent, cashDiscountPercent: percent, whatsappButton: z.boolean() })
+    .object({
+      transferDiscountPercent: percent,
+      cashDiscountPercent: percent,
+      whatsappButton: z.boolean(),
+      constructionBanner: z.boolean(),
+    })
     .safeParse({
       transferDiscountPercent: formData.get("transferDiscountPercent"),
       cashDiscountPercent: formData.get("cashDiscountPercent"),
       whatsappButton: formData.get("whatsappButton") === "on",
+      constructionBanner: formData.get("constructionBanner") === "on",
     });
   if (!parsed.success) return { error: parsed.error.issues[0].message };
 

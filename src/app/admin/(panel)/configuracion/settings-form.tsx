@@ -11,6 +11,7 @@ export function SettingsForm(props: {
   transferDiscountPercent: number;
   cashDiscountPercent: number;
   whatsappButton: boolean;
+  constructionBanner: boolean;
 }) {
   const [state, formAction, pending] = useActionState<SettingsState, FormData>(saveSettings, {});
 
@@ -62,6 +63,20 @@ export function SettingsForm(props: {
               Mostrar el botón flotante de WhatsApp en la tienda
               <span className="block text-muted-foreground">
                 Los links de WhatsApp de Contacto y de los pedidos se ven siempre.
+              </span>
+            </span>
+          </label>
+          <label className="flex items-start gap-2 text-sm">
+            <input
+              type="checkbox"
+              name="constructionBanner"
+              defaultChecked={props.constructionBanner}
+              className="mt-0.5 size-4 accent-primary"
+            />
+            <span>
+              Mostrar el aviso &quot;Web en construcción&quot; en la tienda
+              <span className="block text-muted-foreground">
+                Una franja arriba de todo. Sacalo cuando la web esté terminada.
               </span>
             </span>
           </label>

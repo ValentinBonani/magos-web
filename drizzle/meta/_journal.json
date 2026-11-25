@@ -50,6 +50,13 @@
       "when": 1792633447255,
       "tag": "0006_stock_bajo",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1795565126378,
+      "tag": "0007_construction_banner",
+      "breakpoints": true
     }
   ]
 }

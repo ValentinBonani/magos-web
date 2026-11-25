@@ -1,0 +1,1 @@
+ALTER TABLE "settings" ADD COLUMN "construction_banner" boolean DEFAULT true NOT NULL;

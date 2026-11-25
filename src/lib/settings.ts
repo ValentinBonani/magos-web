@@ -10,6 +10,7 @@ export async function getSettings() {
       transferDiscountPercent: 10,
       cashDiscountPercent: 15,
       whatsappButton: true,
+      constructionBanner: true,
       lowStockReportDay: null,
       lowStockReportIds: [],
     }

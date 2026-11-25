@@ -226,6 +226,8 @@ el cliente paga). Medidas:
 ### Comunicación y redes
 - **Botón flotante de WhatsApp** en toda la web. El dueño puede querer sacarlo después
   → que se pueda activar/desactivar desde el panel.
+- **Aviso "Web en construcción"**: franja arriba de todo en la tienda mientras la web no
+  esté terminada. Se activa/desactiva desde Configuración en el panel.
 - **Redes:** solo Instagram (usuario a definir). Link en la cabecera o el pie.
 
 ### Funcionalidades a futuro (no para el lanzamiento)

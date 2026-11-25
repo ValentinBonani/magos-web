@@ -27,6 +27,7 @@ export default async function SettingsPage() {
           transferDiscountPercent={settings.transferDiscountPercent}
           cashDiscountPercent={settings.cashDiscountPercent}
           whatsappButton={settings.whatsappButton}
+          constructionBanner={settings.constructionBanner}
         />
       </div>
 
