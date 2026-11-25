@@ -3,8 +3,8 @@ export const SITE = {
   name: "Magos del Sur",
   tagline: "Juegos de mesa, Magic y Pokémon en Quilmes",
   // Número de WhatsApp en formato internacional, sin + ni espacios (Argentina: 549 + área + número).
-  whatsapp: "5491140414118",
-  whatsappDisplay: "11 4041-4118",
+  whatsapp: "5491177420866",
+  whatsappDisplay: "11 7742-0866",
   instagram: "valentin.bonani",
   address: "Alvear 850",
   city: "Quilmes Centro, Buenos Aires",
