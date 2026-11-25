@@ -185,7 +185,7 @@ export function CheckoutForm({ transferDiscount, cashDiscount, mercadoPagoEnable
         </fieldset>
       </div>
 
-      <aside className="h-fit space-y-3 rounded-xl border p-4 md:sticky md:top-24">
+      <aside className="h-fit space-y-3 rounded-xl border p-4 md:sticky md:top-28">
         <h2 className="font-semibold">Resumen</h2>
         <ul className="space-y-1 text-sm">
           {rows.map((r) => (
