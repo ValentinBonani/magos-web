@@ -174,6 +174,14 @@ el cliente paga). Medidas:
 - **Estadísticas:** ventas por período (hoy, semana, mes, rango; total, cantidad, ticket
   promedio; web/mostrador), más vendidos (unidades y plata) y gráfico de ventas por día.
   (Por medio de pago no hace falta en las estadísticas.)
+  Definido (2026-11-24): cuentan los pedidos web **cobrados** (pagado, listo para
+  retirar, entregado; un efectivo confirmado cuenta recién al marcarlo pagado/entregado)
+  y las ventas del mostrador no anuladas. Cada venta va por la **fecha del pedido**.
+  Montos con descuento y sin envío. Períodos: hoy, esta semana (lunes a hoy), este mes,
+  mes pasado y rango (hasta un año). Cada número se compara con el período anterior
+  (semana/mes: los mismos días de la semana/mes pasado). Top 10 por unidades y por
+  plata. Gráfico de barras por día (por mes si el rango pasa de 3 meses), web y
+  mostrador apilados.
 - **Listado de clientes** (de los pedidos web).
 
 ### Notificaciones al cliente (definidas hasta ahora)

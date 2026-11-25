@@ -15,6 +15,7 @@ export const metadata: Metadata = { title: "Panel — Magos del Sur" };
 const NAV = [
   { href: "/admin/mostrador", label: "Mostrador" },
   { href: "/admin/pedidos", label: "Pedidos" },
+  { href: "/admin/estadisticas", label: "Estadísticas" },
   { href: "/admin/productos", label: "Productos" },
   { href: "/admin/categorias", label: "Categorías" },
   { href: "/admin/eventos", label: "Eventos" },
