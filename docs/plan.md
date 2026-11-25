@@ -138,6 +138,9 @@ Orden acordado: Excel → eventos → stock bajo → estadísticas → clientes 
 - ⬜ Envíos por Correo Argentino (ver requerimientos y `docs/envios-correo.md`).
   Esperando credenciales de la API MiCorreo (test y producción) que pide el dueño.
 - Contacto con mapa, WhatsApp, email y horarios: ✅ (2026-10-21).
+- ✅ (2026-11-24) Aviso "Web en construcción" fijo arriba (activable en Configuración,
+  migración `0007`); nuevo número de WhatsApp; sección **Juegos de rol** (migración
+  `0008`, mismos filtros que juegos de mesa, categorías copiadas de juegos de mesa).
 
 ## Después del lanzamiento
 - Envíos a todo el país (cuando se elija la empresa de correo).
