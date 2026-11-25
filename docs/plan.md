@@ -133,12 +133,15 @@ Orden acordado: Excel → eventos → stock bajo → estadísticas → clientes 
   pedidos), solo si hay productos nuevos con stock bajo desde el aviso anterior; lista
   los nuevos y los que siguen así. Prueba automática (8 casos) OK.
   ⬜ Prueba del dueño.
-- 🟡 **Estadísticas** (`/admin/estadisticas`, consultas en `src/lib/stats.ts`): total,
+- ✅ **Estadísticas** (`/admin/estadisticas`, consultas en `src/lib/stats.ts`): total,
   cantidad y ticket promedio (web/mostrador) con comparación contra el período anterior,
   gráfico de barras apiladas (`sales-chart.tsx`, sin librerías) y top 10 por unidades y
   por plata. Prueba automática (22 casos) OK.
+  ✅ Probado por el dueño (2026-11-24).
+- 🟡 **Clientes** (`/admin/clientes`, consultas en `src/lib/customers.ts`): listado por
+  email con buscador, orden y páginas de 50; ficha `/admin/clientes/ficha?email=` con
+  pedidos y bloqueo. Link desde el detalle del pedido. Prueba automática (13 casos) OK.
   ⬜ Prueba del dueño.
-- ⬜ Listado de clientes.
 - ⬜ Envíos por Correo Argentino (ver requerimientos y `docs/envios-correo.md`).
   Esperando credenciales de la API MiCorreo (test y producción) que pide el dueño.
 - Contacto con mapa, WhatsApp, email y horarios: ✅ (2026-10-21).

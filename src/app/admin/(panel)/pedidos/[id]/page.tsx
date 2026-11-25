@@ -65,7 +65,17 @@ export default async function OrderDetailPage({ params }: PageProps<"/admin/pedi
       <div className="grid gap-6 md:grid-cols-[1fr_18rem]">
         <div className="space-y-6">
           <section className="space-y-2 rounded-xl border p-4 text-sm">
-            <h2 className="font-semibold">Cliente</h2>
+            <div className="flex items-center justify-between gap-2">
+              <h2 className="font-semibold">Cliente</h2>
+              {!isCounterSale && (
+                <Link
+                  href={`/admin/clientes/ficha?email=${encodeURIComponent(order.customerEmail)}`}
+                  className="text-xs text-primary hover:underline"
+                >
+                  Ver todos sus pedidos →
+                </Link>
+              )}
+            </div>
             <p className="text-base">{order.customerName}</p>
             {order.customerEmail && (
               <p>

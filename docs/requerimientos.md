@@ -182,7 +182,12 @@ el cliente paga). Medidas:
   (semana/mes: los mismos días de la semana/mes pasado). Top 10 por unidades y por
   plata. Gráfico de barras por día (por mes si el rango pasa de 3 meses), web y
   mostrador apilados.
-- **Listado de clientes** (de los pedidos web).
+- **Listado de clientes** (de los pedidos web). Definido (2026-11-24): un cliente = un
+  email (sin importar mayúsculas); incluye a quienes solo tienen pedidos cancelados.
+  Columnas: nombre y teléfono del último pedido, pedidos, cobrados, gastado (cobrados,
+  sin envío) y último pedido. Buscador (nombre sin acentos, email, teléfono) y orden por
+  último pedido, gastado o cantidad. Ficha con sus datos (todos los teléfonos y nombres
+  que usó), sus pedidos y botón para bloquear el email y los teléfonos. Sin exportar.
 
 ### Notificaciones al cliente (definidas hasta ahora)
 - Confirmación de pedido (con número, link único y, si es transferencia, datos
