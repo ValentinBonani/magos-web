@@ -41,6 +41,7 @@ const CATEGORIES = {
     "Infantiles",
     "Cooperativos",
   ],
+  "juegos-de-rol": ["Estrategia", "Familiares", "Party", "Cartas", "Infantiles", "Cooperativos"],
   magic: ["Sobres", "Mazos"],
   pokemon: ["Sobres", "Mazos"],
 };

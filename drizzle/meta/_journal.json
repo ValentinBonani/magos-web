@@ -57,6 +57,13 @@
       "when": 1795565126378,
       "tag": "0007_construction_banner",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1795565439601,
+      "tag": "0008_juegos_de_rol",
+      "breakpoints": true
     }
   ]
 }

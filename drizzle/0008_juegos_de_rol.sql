@@ -1,0 +1,1 @@
+ALTER TYPE "public"."section" ADD VALUE 'juegos-de-rol' BEFORE 'magic';

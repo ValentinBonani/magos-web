@@ -8,6 +8,7 @@ import { mapsUrl, SITE } from "@/lib/site";
 
 const SECTION_BLURBS: Record<(typeof SECTIONS)[number], string> = {
   "juegos-de-mesa": "Estrategia, familiares, party y mucho más.",
+  "juegos-de-rol": "Manuales, aventuras, dados y accesorios para rolear.",
   magic: "Sobres y mazos de Magic: The Gathering.",
   pokemon: "Sobres y mazos de Pokémon TCG.",
 };
@@ -32,7 +33,7 @@ export default async function Home() {
         </Link>
       </section>
 
-      <section className="grid gap-3 sm:grid-cols-3">
+      <section className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         {SECTIONS.map((s) => (
           <Link
             key={s}

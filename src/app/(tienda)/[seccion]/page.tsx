@@ -32,8 +32,8 @@ export default async function SectionPage({ params, searchParams }: PageProps<"/
     jugadores: str(sp.jugadores),
     edad: str(sp.edad),
   };
-  // Jugadores, edad y editorial aplican a juegos de mesa (no a Magic ni Pokémon).
-  const isBoardGames = section === "juegos-de-mesa";
+  // Jugadores, edad y editorial aplican a juegos de mesa y de rol (no a Magic ni Pokémon).
+  const isBoardGames = section === "juegos-de-mesa" || section === "juegos-de-rol";
 
   const [options, result] = await Promise.all([
     sectionFilterOptions(section),

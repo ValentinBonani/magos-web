@@ -16,11 +16,12 @@ import {
 // (clave publishable) no puede leerlas ni escribirlas. La web accede por conexión
 // directa a Postgres, que no pasa por RLS.
 
-export const SECTIONS = ["juegos-de-mesa", "magic", "pokemon"] as const;
+export const SECTIONS = ["juegos-de-mesa", "juegos-de-rol", "magic", "pokemon"] as const;
 export type Section = (typeof SECTIONS)[number];
 
 export const SECTION_LABELS: Record<Section, string> = {
   "juegos-de-mesa": "Juegos de mesa",
+  "juegos-de-rol": "Juegos de rol",
   magic: "Magic",
   pokemon: "Pokémon",
 };

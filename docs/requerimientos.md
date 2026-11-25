@@ -60,13 +60,15 @@ Repo: https://github.com/ValentinBonani/magos-web
 
 ### Tipos de producto
 - Juegos de mesa (lo principal).
+- **Juegos de rol:** sección aparte para darles énfasis; mismos atributos y filtros que
+  juegos de mesa (jugadores, edad, editorial). Arrancó con una copia de sus categorías.
 - **Magic: The Gathering** y **Pokémon**: sobres/packs y mazos armados. Los mazos son
   siempre de Magic o Pokémon (no hay sección de mazos aparte).
 - **Sin variantes:** si un juego tiene otra versión (ej. otro idioma), se carga como un
   producto aparte y la diferencia se aclara en el título o la descripción.
 
 ### Estructura del sitio
-- **Menú principal:** Juegos de mesa · Magic · Pokémon · Eventos · Nosotros · Contacto.
+- **Menú principal:** Juegos de mesa · Juegos de rol · Magic · Pokémon · Eventos · Nosotros · Contacto.
 - **Categorías:** cada sección de productos tiene categorías, que se crean y editan desde
   el panel. Propuesta inicial:
   - Juegos de mesa: Estrategia, Familiares, Party, Cartas, Infantiles, Cooperativos
